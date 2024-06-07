@@ -59,19 +59,16 @@ function App() {
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, deserunt, accusamus facilis tempore omnis repudiandae doloribus ipsam debitis corporis dicta facere sequi neque. Soluta eaque nostrum ut hic non eligendi.
                   </p>
                 </div>
-                <div className=' flex flex-col p-3 space-y-2'>
-                  <div className=' bg-green-200 rounded-md '>
-                    <p>opcao1</p>
-                  </div>
-                  <div className=' bg-green-200'>
-                    <p>opcao2</p>
-                  </div>
-                  <div className=' bg-green-200'>
-                    <p>opcao3</p>
-                  </div>
-                </div>  
+                <div className='bg-green-200 p-3 mt-2 rounded-md'>
+                 <p> text input</p>
+                </div> 
             </div>
           </div>
+
+          <div className='flex bg-red-400 rounded-lg w-[80px] justify-center ml-3 p-3 cursor-pointer'>
+            <button type="button">Salvar</button>
+          </div>
+          
 
 
       </div>
