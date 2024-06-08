@@ -14,7 +14,7 @@ export interface ObjectiveQuestion {
   
   export type Question = ObjectiveQuestion | DiscursiveQuestion;
   
-  export interface Questionario {
+  export interface QuestionarioType {
     id: number;
     title: string;
     description: string;

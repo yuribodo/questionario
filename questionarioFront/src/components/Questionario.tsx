@@ -3,8 +3,9 @@ import { formAnswer, FormData } from '../lib/atom'
 import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import questionario from '../../questionario.json'
 
-function Questionario() {
+function Questionario({ questionarioId }: { questionarioId: string }) {
   const [answer, setAnswer] = useAtom(formAnswer)
   const { register, handleSubmit, watch, reset } = useForm<FormData>({
     defaultValues: answer // Set default values from the answer state
@@ -14,6 +15,7 @@ function Questionario() {
     console.log(data)
     setAnswer(data)
   }
+  console.log(questionarioId)
 
   useEffect(() => {
     reset(answer) // Reset the form with the current answers when the component mounts or answers change
