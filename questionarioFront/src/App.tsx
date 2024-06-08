@@ -1,6 +1,8 @@
 import './App.css'
+import {useForm} from 'react-hook-form'
 
 function App() {
+  const {register, handleSubmit} = useForm()
 
   return (
     <>
@@ -60,14 +62,19 @@ function App() {
                   </p>
                 </div>
                 <div className='bg-green-200 p-3 mt-2 rounded-md'>
-                 <p> text input</p>
+                <form onSubmit={handleSubmit((data) => {
+                  console.log(data)
+                })}>
+                    <input {...register("Resposta")} type="text" placeholder='Resposta'  className=' border  border-black w-[1000px]'/>
+                    <div className='flex bg-red-400 rounded-lg w-[80px] justify-center ml-3 p-3 cursor-pointer'>
+                      <input type="submit" className=' cursor-pointer'></input>
+                    </div>
+                  </form>
                 </div> 
             </div>
           </div>
 
-          <div className='flex bg-red-400 rounded-lg w-[80px] justify-center ml-3 p-3 cursor-pointer'>
-            <button type="button">Salvar</button>
-          </div>
+          
           
 
 
