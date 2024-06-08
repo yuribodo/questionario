@@ -1,22 +1,25 @@
 import './App.css'
 import { useForm } from 'react-hook-form'
-import { formAnswer } from './lib/atom'
+import { formAnswer, FormData } from './lib/atom'
 import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 function App() {
   const [answer, setAnswer] = useAtom(formAnswer)
-  const { register, handleSubmit, watch } = useForm()
+  const { register, handleSubmit, watch, reset } = useForm<FormData>({
+    defaultValues: answer // Set default values from the answer state
+  })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: FormData) => {
     console.log(data)
     setAnswer(data)
   }
 
   useEffect(() => {
+    reset(answer) // Reset the form with the current answers when the component mounts or answers change
     console.log('Current answer:', answer)
-  }, [answer])
+  }, [answer, reset])
 
   const selectedOption = watch()
 
