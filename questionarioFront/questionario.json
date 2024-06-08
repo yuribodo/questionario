@@ -1,0 +1,341 @@
+{
+    "questionarios": [
+      {
+        "id": 1,
+        "title": "Questionário de React",
+        "description": "Avaliação de conhecimentos sobre o framework React.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "objetiva",
+            "question": "Qual é a principal biblioteca de gerenciamento de estado do React?",
+            "choices": [
+              "Redux",
+              "Context API",
+              "MobX"
+            ],
+            "correctChoice": "Redux"
+          },
+          {
+            "id": 2,
+            "type": "objetiva",
+            "question": "Qual método é usado para adicionar um evento de clique em um botão no React?",
+            "choices": [
+              "onClick",
+              "addEventListener",
+              "clickHandler"
+            ],
+            "correctChoice": "onClick"
+          },
+          {
+            "id": 3,
+            "type": "objetiva",
+            "question": "Qual é o comando para criar um novo projeto React usando Create React App?",
+            "choices": [
+              "create-react-app my-app",
+              "npx create-react-app my-app",
+              "npm create-react-app my-app"
+            ],
+            "correctChoice": "npx create-react-app my-app"
+          },
+          {
+            "id": 4,
+            "type": "objetiva",
+            "question": "Qual hook do React é usado para gerenciar o ciclo de vida de um componente?",
+            "choices": [
+              "useEffect",
+              "useState",
+              "useContext"
+            ],
+            "correctChoice": "useEffect"
+          },
+          {
+            "id": 5,
+            "type": "discursiva",
+            "question": "Explique a diferença entre componentes de classe e componentes funcionais no React."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Questionário de Angular",
+        "description": "Avaliação de conhecimentos sobre o framework Angular.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "objetiva",
+            "question": "Qual comando é usado para criar um novo projeto Angular?",
+            "choices": [
+              "ng new my-app",
+              "angular new my-app",
+              "npm new angular-app"
+            ],
+            "correctChoice": "ng new my-app"
+          },
+          {
+            "id": 2,
+            "type": "objetiva",
+            "question": "Qual operador RxJS é usado para transformar um Observable em outro Observable?",
+            "choices": [
+              "map",
+              "filter",
+              "reduce"
+            ],
+            "correctChoice": "map"
+          },
+          {
+            "id": 3,
+            "type": "objetiva",
+            "question": "Qual diretiva é usada para renderizar elementos condicionais no Angular?",
+            "choices": [
+              "*ngIf",
+              "*ngFor",
+              "*ngSwitch"
+            ],
+            "correctChoice": "*ngIf"
+          },
+          {
+            "id": 4,
+            "type": "objetiva",
+            "question": "Qual serviço Angular é usado para fazer requisições HTTP?",
+            "choices": [
+              "HttpClient",
+              "HttpService",
+              "HttpRequest"
+            ],
+            "correctChoice": "HttpClient"
+          },
+          {
+            "id": 5,
+            "type": "discursiva",
+            "question": "Descreva o ciclo de vida de um componente Angular."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Questionário de Vue.js",
+        "description": "Avaliação de conhecimentos sobre o framework Vue.js.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "objetiva",
+            "question": "Qual é o comando para criar um novo projeto Vue.js usando Vue CLI?",
+            "choices": [
+              "vue create my-app",
+              "npm create vue-app",
+              "npx create vue-app"
+            ],
+            "correctChoice": "vue create my-app"
+          },
+          {
+            "id": 2,
+            "type": "objetiva",
+            "question": "Qual diretiva Vue é usada para vincular um valor a um atributo HTML?",
+            "choices": [
+              "v-bind",
+              "v-model",
+              "v-if"
+            ],
+            "correctChoice": "v-bind"
+          },
+          {
+            "id": 3,
+            "type": "objetiva",
+            "question": "Como você pode definir um método em um componente Vue?",
+            "choices": [
+              "Dentro da seção 'methods'",
+              "Dentro da seção 'data'",
+              "Dentro da seção 'computed'"
+            ],
+            "correctChoice": "Dentro da seção 'methods'"
+          },
+          {
+            "id": 4,
+            "type": "objetiva",
+            "question": "Qual ferramenta é usada para depurar aplicações Vue.js?",
+            "choices": [
+              "Vue Devtools",
+              "React Devtools",
+              "Angular Devtools"
+            ],
+            "correctChoice": "Vue Devtools"
+          },
+          {
+            "id": 5,
+            "type": "discursiva",
+            "question": "Explique a diferença entre data e computed properties em Vue.js."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Questionário de Node.js",
+        "description": "Avaliação de conhecimentos sobre o runtime Node.js.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "objetiva",
+            "question": "Qual comando é usado para iniciar um novo projeto Node.js?",
+            "choices": [
+              "npm init",
+              "npm start",
+              "node new"
+            ],
+            "correctChoice": "npm init"
+          },
+          {
+            "id": 2,
+            "type": "objetiva",
+            "question": "Qual módulo Node.js é usado para trabalhar com o sistema de arquivos?",
+            "choices": [
+              "fs",
+              "http",
+              "path"
+            ],
+            "correctChoice": "fs"
+          },
+          {
+            "id": 3,
+            "type": "objetiva",
+            "question": "Qual comando é usado para instalar pacotes no Node.js?",
+            "choices": [
+              "npm install",
+              "node install",
+              "install npm"
+            ],
+            "correctChoice": "npm install"
+          },
+          {
+            "id": 4,
+            "type": "objetiva",
+            "question": "Qual é a função do arquivo package.json?",
+            "choices": [
+              "Gerenciar dependências e metadados do projeto",
+              "Configurar o servidor Node.js",
+              "Especificar a versão do Node.js"
+            ],
+            "correctChoice": "Gerenciar dependências e metadados do projeto"
+          },
+          {
+            "id": 5,
+            "type": "discursiva",
+            "question": "Descreva como você configuraria um servidor HTTP básico usando Node.js."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Questionário de Express.js",
+        "description": "Avaliação de conhecimentos sobre o framework Express.js.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "objetiva",
+            "question": "Qual comando é usado para instalar o Express.js?",
+            "choices": [
+              "npm install express",
+              "npm install express.js",
+              "npm install expressjs"
+            ],
+            "correctChoice": "npm install express"
+          },
+          {
+            "id": 2,
+            "type": "objetiva",
+            "question": "Qual método é usado para definir uma rota GET no Express.js?",
+            "choices": [
+              "app.get()",
+              "app.route()",
+              "app.post()"
+            ],
+            "correctChoice": "app.get()"
+          },
+          {
+            "id": 3,
+            "type": "objetiva",
+            "question": "Qual middleware é usado para processar dados de formulários em Express.js?",
+            "choices": [
+              "body-parser",
+              "cookie-parser",
+              "express-session"
+            ],
+            "correctChoice": "body-parser"
+          },
+          {
+            "id": 4,
+            "type": "objetiva",
+            "question": "Qual é a função do método app.listen() em uma aplicação Express.js?",
+            "choices": [
+              "Iniciar o servidor na porta especificada",
+              "Definir uma rota padrão",
+              "Configurar o middleware padrão"
+            ],
+            "correctChoice": "Iniciar o servidor na porta especificada"
+          },
+          {
+            "id": 5,
+            "type": "discursiva",
+            "question": "Explique como você configuraria um middleware personalizado no Express.js."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Questionário de Next.js",
+        "description": "Avaliação de conhecimentos sobre o framework Next.js.",
+        "questions": [
+          {
+            "id": 1,
+            "type": "objetiva",
+            "question": "Qual comando é usado para criar um novo projeto Next.js?",
+            "choices": [
+              "npx create-next-app",
+              "npx create-react-app",
+              "next init"
+            ],
+            "correctChoice": "npx create-next-app"
+          },
+          {
+            "id": 2,
+            "type": "objetiva",
+            "question": "Qual é a principal característica do Next.js?",
+            "choices": [
+              "Renderização server-side",
+              "Componentização",
+              "Reatividade"
+            ],
+            "correctChoice": "Renderização server-side"
+          },
+          {
+            "id": 3,
+            "type": "objetiva",
+            "question": "Qual arquivo é usado para definir rotas personalizadas no Next.js?",
+            "choices": [
+              "next.config.js",
+              "routes.js",
+              "app.js"
+            ],
+            "correctChoice": "next.config.js"
+          },
+          {
+            "id": 4,
+            "type": "objetiva",
+            "question": "Qual hook é usado para buscar dados em uma página Next.js usando Server-Side Rendering?",
+            "choices": [
+              "getServerSideProps",
+              "getStaticProps",
+              "useEffect"
+            ],
+            "correctChoice": "getServerSideProps"
+          },
+          {
+            "id": 5,
+            "type": "discursiva",
+            "question": "Descreva as diferenças entre getStaticProps e getServerSideProps no Next.js."
+          }
+        ]
+      }
+    ]
+  }
+  

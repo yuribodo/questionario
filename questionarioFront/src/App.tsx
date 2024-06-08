@@ -1,5 +1,9 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import questionarioData from '../questionario.json';
+import QuestionarioThumb from './components/QuestionarioThumb';
 
+
+const questionarios: any[] = questionarioData.questionarios; 
 
 function App() {
   return (
@@ -10,8 +14,16 @@ function App() {
           Ir para o Questionário
         </Link>
       </div>
+      <div className='p-4'>
+        <h2 className='text-2xl font-bold text-center'>Questionários</h2>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+          {questionarios.map((q: any)  => ( 
+            <QuestionarioThumb key={q.id} questionario={q} />
+          ))}
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
