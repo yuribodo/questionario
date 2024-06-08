@@ -1,14 +1,24 @@
+// App.js
 import './App.css'
 import { useForm } from 'react-hook-form'
+import { formAnswer } from './lib/atom'
+import { useAtom } from 'jotai'
+import { useEffect } from 'react'
 
 function App() {
+  const [answer, setAnswer] = useAtom(formAnswer)
   const { register, handleSubmit, watch } = useForm()
 
   const onSubmit = (data: any) => {
     console.log(data)
+    setAnswer(data)
   }
 
-  const selectedOption = watch();
+  useEffect(() => {
+    console.log('Current answer:', answer)
+  }, [answer])
+
+  const selectedOption = watch()
 
   return (
     <>

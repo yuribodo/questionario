@@ -1,3 +1,3 @@
-import {atom} from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 
-export const formAnswer = atom([])
+export const formAnswer = atomWithStorage('answer',[])
