@@ -1,111 +1,90 @@
-import { useForm } from 'react-hook-form'
-import { formAnswer, FormData } from '../lib/atom'
-import { useAtom } from 'jotai'
-import { useEffect } from 'react'
-import { motion } from 'framer-motion'
-import questionario from '../../questionario.json'
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { useAtom } from 'jotai';
+import { formAnswer, FormData } from '../lib/atom';
+import questionarioData from '../../questionario.json';
+
+type SelectedOption = {
+  [key: string]: string;
+};
 
 function Questionario({ questionarioId }: { questionarioId: string }) {
-  const [answer, setAnswer] = useAtom(formAnswer)
+  const questionarioIdNumber = parseInt(questionarioId, 10);
+  const [questionario, setQuestionario] = useState<any | null>(questionarioData.questionarios);
+  const [answer, setAnswer] = useAtom(formAnswer);
   const { register, handleSubmit, watch, reset } = useForm<FormData>({
-    defaultValues: answer // Set default values from the answer state
-  })
+    defaultValues: answer // Define os valores padrão a partir do estado de resposta
+  });
 
   const onSubmit = (data: FormData) => {
-    console.log(data)
-    setAnswer(data)
-  }
-  console.log(questionarioId)
+    console.log(data);
+    setAnswer(data);
+  };
 
   useEffect(() => {
-    reset(answer) // Reset the form with the current answers when the component mounts or answers change
-    console.log('Current answer:', answer)
-  }, [answer, reset])
+    if (questionario) {
+      reset(answer);
+    }
+  }, [questionario, reset, answer]);
 
-  const selectedOption = watch()
+  const selectedOption = watch() as SelectedOption;
+
+  const questionarioFiltrado = questionario ? questionario.find((q: any) => q.id === questionarioIdNumber) : null;
+
+  console.log("questionarioId: ", questionarioId);
+  console.log("questionarioIdNumber: ", questionarioIdNumber);
+  console.log("questionarioData: ", questionarioData);
+  console.log("questionario: ", questionario);
+  console.log("questionarioFiltrado: ", questionarioFiltrado);
+
+  if (!questionarioFiltrado || !questionarioFiltrado.questions) {
+    return <div>Carregando...</div>;
+  }
+
+  const { questions } = questionarioFiltrado;
 
   return (
-    <>
-      <div className='min-h-screen bg-gray-900 text-white'>
-        <h1 className='p-4 text-4xl font-bold text-center'>Questionário</h1>
+    <div className='min-h-screen bg-gray-900 text-white'>
+      <h1 className='p-4 text-4xl font-bold text-center'>{questionarioFiltrado.title}</h1>
+      <p className='text-center font-semibold text-2xl'>{questionarioFiltrado.description}</p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className='flex flex-col'>
-            <div className='p-3'>
-              <h2 className='font-semibold text-2xl'>Questao 1</h2>
-              <div className='bg-gray-800 p-4 rounded-md'>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, deserunt, accusamus facilis tempore omnis repudiandae doloribus ipsam debitis corporis dicta facere sequi neque. Soluta eaque nostrum ut hic non eligendi.
-                </p>
-              </div>
-              <div className='flex flex-col p-3 space-y-2'>
-                {['opcao1', 'opcao2', 'opcao3'].map((option, index) => (
-                  <label key={index} className={`p-2 rounded-md cursor-pointer ${selectedOption.questao1 === option ? 'bg-green-500' : 'bg-gray-700'}`}>
-                    <input {...register("questao1")} type="radio" value={option} className='hidden' />
-                    {option}
+      <form onSubmit={handleSubmit(onSubmit)} className="p-4">
+        {questions.map((question: any) => (
+          <div key={question.id} className="mb-6">
+            <p className="text-xl mb-2">{question.question}</p>
+            {question.type === 'objetiva' && (
+              <div className="space-y-2">
+                {question.choices.map((choice: string, index: number) => (
+                  <label key={index} className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      value={choice}
+                      {...register(`questions.${question.id}`)}
+                      className="form-radio"
+                    />
+                    <span>{choice}</span>
                   </label>
                 ))}
               </div>
-            </div>
-          </motion.div>
+            )}
+            {question.type === 'discursiva' && (
+              <textarea
+                {...register(`questions.${question.id}`)}
+                className="w-full p-2 bg-gray-700 rounded"
+                rows={4}
+              />
+            )}
+          </div>
+        ))}
 
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className='flex flex-col'>
-            <div className='p-3'>
-              <h2 className='font-semibold text-2xl'>Questao 2</h2>
-              <div className='bg-gray-800 p-4 rounded-md'>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, deserunt, accusamus facilis tempore omnis repudiandae doloribus ipsam debitis corporis dicta facere sequi neque. Soluta eaque nostrum ut hic non eligendi.
-                </p>
-              </div>
-              <div className='flex flex-col p-3 space-y-2'>
-                {['opcao1', 'opcao2', 'opcao3'].map((option, index) => (
-                  <label key={index} className={`p-2 rounded-md cursor-pointer ${selectedOption.questao2 === option ? 'bg-green-500' : 'bg-gray-700'}`}>
-                    <input {...register("questao2")} type="radio" value={option} className='hidden' />
-                    {option}
-                  </label>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className='flex flex-col'>
-            <div className='p-3'>
-              <h2 className='font-semibold text-2xl'>Questao 3</h2>
-              <div className='bg-gray-800 p-4 rounded-md'>
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, deserunt, accusamus facilis tempore omnis repudiandae doloribus ipsam debitis corporis dicta facere sequi neque. Soluta eaque nostrum ut hic non eligendi.
-                </p>
-              </div>
-              <div className='bg-gray-700 p-3 mt-2 rounded-md'>
-                <input {...register("questao3")} type="text" placeholder='Resposta' className='bg-gray-900 text-white border border-gray-600 w-full p-2 rounded-md' />
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.input 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.6 }}
-            type="submit" 
-            className='bg-red-500 rounded-lg p-2 mt-4 cursor-pointer w-full text-center' 
-            value="Submit" 
-          />
-        </form>
-      </div>
-    </>
-  )
+        <div className="text-center">
+          <button type="submit" className="px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded">
+            Enviar Respostas
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
-export default Questionario
+export default Questionario;
