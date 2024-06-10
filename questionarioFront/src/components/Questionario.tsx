@@ -78,15 +78,23 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
                     <label
                       key={index}
                       className={`p-2 rounded-md cursor-pointer ${
-                        selectedOption[`questions.${question.id}`] === choice ? 'bg-blue-600 text-white' : 'bg-gray-700'
+                        selectedOption[`questions.${question.id}`] === choice ? 'bg-blue-900 text-white' : 'bg-gray-700'
                       }`}
                     >
                       <input
-                        {...register(`questions.${question.id}`)}
-                        type="radio"
-                        value={choice}
-                        className='hidden'
-                      />
+                          {...register(`questions.${question.id}`)}
+                          type="radio"
+                          value={choice}
+                          className='hidden'
+                          onChange={(e) => {
+                            const newValue = e.target.value;
+                            setAnswer(prevState => ({
+                              ...prevState,
+                              [`questions.${question.id}`]: newValue
+                            }));
+                          }}
+                        />
+
                       {choice}
                     </label>
                   ))}
