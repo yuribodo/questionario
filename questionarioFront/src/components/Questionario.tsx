@@ -4,6 +4,8 @@ import { useAtom } from 'jotai';
 import { formAnswer, FormData } from '../lib/atom';
 import { motion } from 'framer-motion';
 import questionarioData from '../../questionario.json';
+import Modal from './Modal';
+
 
 type SelectedOption = {
   [key: string]: string;
@@ -13,6 +15,7 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
   const questionarioIdNumber = parseInt(questionarioId, 10);
   const [questionario] = useState<any | null>(questionarioData.questionarios);
   const [answer, setAnswer] = useAtom(formAnswer);
+  const [isModalVisible, setModalVisible] = useState(false); // Estado para controlar a visibilidade do modal
   const { register, handleSubmit, watch, reset } = useForm<FormData>({
     defaultValues: answer
   });
@@ -20,6 +23,8 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
   const onSubmit = (data: FormData) => {
     console.log(data);
     setAnswer(data);
+    setModalVisible(true); // Mostrar o modal
+    reset(); // Limpar o formulário
   };
 
   useEffect(() => {
@@ -86,13 +91,6 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
                         type="radio"
                         value={choice}
                         className='hidden'
-                        onChange={(e) => {
-                          const newValue = e.target.value;
-                          setAnswer(prevState => ({
-                            ...prevState,
-                            [`questions.${question.id}`]: newValue
-                          }));
-                        }}
                       />
                       <span>{choice}</span>
                     </label>
@@ -123,6 +121,15 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
           Enviar Respostas
         </motion.button>
       </form>
+
+      {isModalVisible && (
+        <Modal onClose={() => setModalVisible(false)}>
+          <div className='p-4'>
+            <h2 className='text-2xl font-bold mb-4'>Respostas enviadas com sucesso!</h2>
+            
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }
