@@ -5,9 +5,12 @@ import { formAnswer, FormData } from '../lib/atom';
 import { motion } from 'framer-motion';
 import questionarioData from '../../questionario.json';
 
+
 type SelectedOption = {
   [key: string]: string;
 };
+
+
 
 function Questionario({ questionarioId }: { questionarioId: string }) {
   const questionarioIdNumber = parseInt(questionarioId, 10);
@@ -17,6 +20,7 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
     defaultValues: answer
   });
 
+  setQuestionario(questionarioData.questionarios)
   const onSubmit = (data: FormData) => {
     console.log(data);
     setAnswer(data);

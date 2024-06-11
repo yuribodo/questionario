@@ -1,9 +1,7 @@
 import { atomWithStorage } from 'jotai/utils'
 
 export type FormData = {
-  questao1: string;
-  questao2: string;
-  questao3: string;
+  [key: string]: string;
 }
 
 export const formAnswer = atomWithStorage<FormData>('answer', {
