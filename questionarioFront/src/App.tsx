@@ -1,6 +1,5 @@
 // App.tsx
 import  { useState } from 'react';
-import { Link } from 'react-router-dom';
 import QuestionarioThumb from './components/QuestionarioThumb';
 
 import questionarioData from '../questionario.json';
