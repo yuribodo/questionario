@@ -5,22 +5,18 @@ import { formAnswer, FormData } from '../lib/atom';
 import { motion } from 'framer-motion';
 import questionarioData from '../../questionario.json';
 
-
 type SelectedOption = {
   [key: string]: string;
 };
 
-
-
 function Questionario({ questionarioId }: { questionarioId: string }) {
   const questionarioIdNumber = parseInt(questionarioId, 10);
-  const [questionario, setQuestionario] = useState<any | null>(questionarioData.questionarios);
+  const [questionario] = useState<any | null>(questionarioData.questionarios);
   const [answer, setAnswer] = useAtom(formAnswer);
   const { register, handleSubmit, watch, reset } = useForm<FormData>({
     defaultValues: answer
   });
 
-  setQuestionario(questionarioData.questionarios)
   const onSubmit = (data: FormData) => {
     console.log(data);
     setAnswer(data);
@@ -81,25 +77,24 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
                   {question.choices.map((choice: string, index: number) => (
                     <label
                       key={index}
-                      className={`p-2 rounded-md cursor-pointer ${
+                      className={`p-2 rounded-md cursor-pointer flex items-center space-x-3 ${
                         selectedOption[`questions.${question.id}`] === choice ? 'bg-blue-900 text-white' : 'bg-gray-700'
                       }`}
                     >
                       <input
-                          {...register(`questions.${question.id}`)}
-                          type="radio"
-                          value={choice}
-                          className='hidden'
-                          onChange={(e) => {
-                            const newValue = e.target.value;
-                            setAnswer(prevState => ({
-                              ...prevState,
-                              [`questions.${question.id}`]: newValue
-                            }));
-                          }}
-                        />
-
-                      {choice}
+                        {...register(`questions.${question.id}`)}
+                        type="radio"
+                        value={choice}
+                        className='hidden'
+                        onChange={(e) => {
+                          const newValue = e.target.value;
+                          setAnswer(prevState => ({
+                            ...prevState,
+                            [`questions.${question.id}`]: newValue
+                          }));
+                        }}
+                      />
+                      <span>{choice}</span>
                     </label>
                   ))}
                 </div>
