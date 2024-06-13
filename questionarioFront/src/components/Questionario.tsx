@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
-import { formAnswer, FormData } from '../lib/atom';
+import { formAnswer, FormData, questionariosAtom } from '../lib/atom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import Modal from './Modal';
@@ -30,24 +30,30 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
   const questionarioIdNumber = parseInt(questionarioId, 10);
   const [questionario, setQuestionario] = useState<Questionario | null>(null);
   const [answer, setAnswer] = useAtom(formAnswer);
-  const [isModalVisible, setModalVisible] = useState(false); // Estado para controlar a visibilidade do modal
+  const [isModalVisible, setModalVisible] = useState(false);
   const { register, handleSubmit, watch, reset } = useForm<FormData>({
-    defaultValues: answer
+    defaultValues: answer,
   });
 
-  const fetchQuestionario = async () => {
-    try {
-      const response = await axios.get<Questionario[]>(`http://192.168.100.211:8080/questionarios`);
-      const questionarioFiltrado = response.data.find((q) => q.id === questionarioIdNumber);
-      setQuestionario(questionarioFiltrado || null);
-    } catch (error) {
-      console.error('Error fetching questionario:', error);
-    }
-  };
+  const [questionariosBack] = useAtom(questionariosAtom);
 
   useEffect(() => {
-    fetchQuestionario();
-  }, [questionarioIdNumber]);
+    const cachedQuestionario = questionariosBack.find((q) => q.id === questionarioIdNumber);
+    if (cachedQuestionario) {
+      setQuestionario(cachedQuestionario);
+    } else {
+      const fetchQuestionario = async () => {
+        try {
+          const response = await axios.get<Questionario[]>(`http://192.168.100.211:8080/questionarios`);
+          const questionarioFiltrado = response.data.find((q) => q.id === questionarioIdNumber);
+          setQuestionario(questionarioFiltrado || null);
+        } catch (error) {
+          console.error('Error fetching questionario:', error);
+        }
+      };
+      fetchQuestionario();
+    }
+  }, [questionarioIdNumber, questionariosBack]);
 
   useEffect(() => {
     if (questionario) {
@@ -60,8 +66,8 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
   const onSubmit = (data: FormData) => {
     console.log(data);
     setAnswer(data);
-    setModalVisible(true); // Mostrar o modal
-    reset(); // Limpar o formulário
+    setModalVisible(true);
+    reset();
   };
 
   if (!questionario || !questionario.questions) {

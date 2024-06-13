@@ -1,11 +1,25 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atom } from 'jotai';
 
-export type FormData = {
+export interface Question {
+  id: number;
+  type: string;
+  question: string;
+  choices: string[];
+  correctChoice: string;
+  questionarioId: number;
+}
+
+export interface Questionario {
+  id: number;
+  title: string;
+  description: string;
+  questions: Question[];
+}
+
+export interface FormData {
   [key: string]: string;
 }
 
-export const formAnswer = atomWithStorage<FormData>('answer', {
-  questao1: '',
-  questao2: '',
-  questao3: ''
-})
+export const formAnswer = atom<FormData>({});
+
+export const questionariosAtom = atom<Questionario[]>([]);
