@@ -6,10 +6,6 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import Modal from './Modal';
 
-type SelectedOption = {
-  [key: string]: string;
-};
-
 interface Question {
   id: number;
   type: string;
@@ -31,7 +27,8 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
   const [questionario, setQuestionario] = useState<Questionario | null>(null);
   const [answer, setAnswer] = useAtom(formAnswer);
   const [isModalVisible, setModalVisible] = useState(false);
-  const { register, handleSubmit, watch, reset } = useForm<FormData>({
+  const [submittedAnswers, setSubmittedAnswers] = useState<FormData | null>(null);
+  const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: answer,
   });
 
@@ -61,13 +58,16 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
     }
   }, [questionario, reset, answer]);
 
-  const selectedOption = watch() as SelectedOption;
-
   const onSubmit = (data: FormData) => {
     console.log(data);
     setAnswer(data);
+    setSubmittedAnswers(data);
     setModalVisible(true);
-    reset();
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+    reset({});
   };
 
   if (!questionario || !questionario.questions) {
@@ -116,11 +116,11 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
                     <label
                       key={index}
                       className={`p-2 rounded-md cursor-pointer flex items-center space-x-3 ${
-                        selectedOption[`questions.${question.id}`] === choice ? 'bg-blue-900 text-white' : 'bg-gray-700'
+                        answer[`questions.${question.id}`] === choice ? 'bg-blue-900 text-white' : 'bg-gray-700'
                       }`}
                     >
                       <input
-                        {...register(`questions.${question.id}`)}
+                        {...register(`questions.${question.id}`, { required: true })}
                         type="radio"
                         value={choice}
                         className='hidden'
@@ -133,10 +133,11 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
               {question.type === 'discursiva' && (
                 <div className='bg-gray-700 p-3 mt-2 rounded-md'>
                   <textarea
-                    {...register(`questions.${question.id}`)}
+                    {...register(`questions.${question.id}`, { required: true })}
                     className='w-full p-2 bg-gray-900 text-white border border-gray-600 rounded-md'
                     rows={4}
                     placeholder='Digite sua resposta aqui...'
+                    defaultValue={answer[`questions.${question.id}`]}
                   />
                 </div>
               )}
@@ -155,10 +156,21 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
         </motion.button>
       </form>
 
-      {isModalVisible && (
-        <Modal onClose={() => setModalVisible(false)}>
+      {isModalVisible && submittedAnswers && (
+        <Modal onClose={handleModalClose}>
           <div className='p-4'>
             <h2 className='text-2xl font-bold mb-4'>Respostas enviadas com sucesso!</h2>
+            <div>
+              {questions.map((question) => (
+                <div key={question.id} className='mb-4'>
+                  <h3 className='font-semibold'>{question.question}</h3>
+                  <p>
+                    <strong>Sua resposta: </strong>
+                    {submittedAnswers[`questions.${question.id}`]}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </Modal>
       )}
