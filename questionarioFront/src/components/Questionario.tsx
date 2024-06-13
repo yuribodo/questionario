@@ -3,29 +3,51 @@ import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
 import { formAnswer, FormData } from '../lib/atom';
 import { motion } from 'framer-motion';
-import questionarioData from '../../questionario.json';
+import axios from 'axios';
 import Modal from './Modal';
-
 
 type SelectedOption = {
   [key: string]: string;
 };
 
+interface Question {
+  id: number;
+  type: string;
+  question: string;
+  choices: string[];
+  correctChoice: string;
+  questionarioId: number;
+}
+
+interface Questionario {
+  id: number;
+  title: string;
+  description: string;
+  questions: Question[];
+}
+
 function Questionario({ questionarioId }: { questionarioId: string }) {
   const questionarioIdNumber = parseInt(questionarioId, 10);
-  const [questionario] = useState<any | null>(questionarioData.questionarios);
+  const [questionario, setQuestionario] = useState<Questionario | null>(null);
   const [answer, setAnswer] = useAtom(formAnswer);
   const [isModalVisible, setModalVisible] = useState(false); // Estado para controlar a visibilidade do modal
   const { register, handleSubmit, watch, reset } = useForm<FormData>({
     defaultValues: answer
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    setAnswer(data);
-    setModalVisible(true); // Mostrar o modal
-    reset(); // Limpar o formulário
+  const fetchQuestionario = async () => {
+    try {
+      const response = await axios.get<Questionario[]>(`http://192.168.100.211:8080/questionarios`);
+      const questionarioFiltrado = response.data.find((q) => q.id === questionarioIdNumber);
+      setQuestionario(questionarioFiltrado || null);
+    } catch (error) {
+      console.error('Error fetching questionario:', error);
+    }
   };
+
+  useEffect(() => {
+    fetchQuestionario();
+  }, [questionarioIdNumber]);
 
   useEffect(() => {
     if (questionario) {
@@ -35,13 +57,18 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
 
   const selectedOption = watch() as SelectedOption;
 
-  const questionarioFiltrado = questionario ? questionario.find((q: any) => q.id === questionarioIdNumber) : null;
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    setAnswer(data);
+    setModalVisible(true); // Mostrar o modal
+    reset(); // Limpar o formulário
+  };
 
-  if (!questionarioFiltrado || !questionarioFiltrado.questions) {
+  if (!questionario || !questionario.questions) {
     return <div>Carregando...</div>;
   }
 
-  const { questions } = questionarioFiltrado;
+  const { questions } = questionario;
 
   return (
     <div className='min-h-screen bg-gray-900 text-white'>
@@ -51,7 +78,7 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
         transition={{ duration: 0.5 }}
         className='p-4 text-4xl font-bold text-center'
       >
-        {questionarioFiltrado.title}
+        {questionario.title}
       </motion.h1>
 
       <motion.p
@@ -60,11 +87,11 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
         transition={{ duration: 0.5, delay: 0.2 }}
         className='text-center font-semibold text-2xl mb-8'
       >
-        {questionarioFiltrado.description}
+        {questionario.description}
       </motion.p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {questions.map((question: any, questionIndex: number) => (
+        {questions.map((question, questionIndex) => (
           <motion.div
             key={question.id}
             initial={{ opacity: 0, y: 50 }}
@@ -79,7 +106,7 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
               </div>
               {question.type === 'objetiva' && (
                 <div className='flex flex-col space-y-2'>
-                  {question.choices.map((choice: string, index: number) => (
+                  {question.choices.map((choice, index) => (
                     <label
                       key={index}
                       className={`p-2 rounded-md cursor-pointer flex items-center space-x-3 ${
@@ -126,7 +153,6 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
         <Modal onClose={() => setModalVisible(false)}>
           <div className='p-4'>
             <h2 className='text-2xl font-bold mb-4'>Respostas enviadas com sucesso!</h2>
-            
           </div>
         </Modal>
       )}
