@@ -1,15 +1,43 @@
-// App.tsx
-import  { useState } from 'react';
+import { useEffect, useState } from 'react';
 import QuestionarioThumb from './components/QuestionarioThumb';
+import axios from 'axios';
 
-import questionarioData from '../questionario.json';
+interface Question {
+  id: number;
+  type: string;
+  question: string;
+  choices: string[];
+  correctChoice: string;
+  questionarioId: number;
+}
+
+interface Questionario {
+  id: number;
+  title: string;
+  description: string;
+  questions: Question[];
+}
 
 function App() {
-  const [questionario, setQuestionario] = useState<any | null>(null);
+  const [questionario, setQuestionario] = useState<Questionario | null>(null);
+  const [questionariosBack, setQuestionariosBack] = useState<Questionario[]>([]);
 
-  const handleClickThumb = (questionario: any) => {
+  const handleClickThumb = (questionario: Questionario) => {
     setQuestionario(questionario);
   };
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get<Questionario[]>('http://192.168.100.211:8080/questionarios');
+      setQuestionariosBack(response.data);
+    } catch (error) {
+      console.error('Error fetching questionarios:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <div className='min-h-screen bg-gray-900 text-white'>
@@ -18,7 +46,7 @@ function App() {
       <div className='p-4'>
         <h2 className='text-2xl font-bold text-center'>Questionários</h2>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-          {questionarioData.questionarios.map((q: any) => (
+          {questionariosBack.map((q) => (
             <QuestionarioThumb key={q.id} questionario={q} onClick={handleClickThumb} />
           ))}
         </div>
