@@ -10,6 +10,11 @@ import {
 import Questionario from './components/Questionario'
 import { useParams } from 'react-router-dom'; // Importe o hook useParams
 import { ClerkProvider } from '@clerk/clerk-react'
+import CreateQuestionario from './components/CreateQuestionario'
+import Dashboard from './components/Dashboard'
+import Sobre from './components/Sobre'
+
+
 
 // Import your publishable key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -33,7 +38,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/questionario/:id" element={<QuestionarioWithId />} /> {/* Use a função de renderização QuestionarioWithId para passar o parâmetro id */}
-
+          <Route path='/createquestionario' element={<CreateQuestionario/>}/>
+          <Route path='/dashboard' element={<Dashboard/>}/>
+          <Route path='/sobre' element={<Sobre/>}/>
         </Routes>
       </ClerkProvider>
     </Router>

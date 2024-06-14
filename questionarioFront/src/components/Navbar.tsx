@@ -32,7 +32,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
             onChange={onSearchChange}
           />
           <div className='hidden md:flex space-x-6'>
-            <Link to="/" className='hover:text-blue-500 transition-colors'>
+            <Link to="/createquestionario" className='hover:text-blue-500 transition-colors'>
               <motion.button 
                 type="button"
                 whileHover={{ scale: 1.1 }}
@@ -41,7 +41,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
                 Criar questionario
               </motion.button>
             </Link>
-            <Link to="/createproject" className='hover:text-blue-500 transition-colors'>
+            <Link to="/dashboard" className='hover:text-blue-500 transition-colors'>
               <motion.button 
                 type="button"
                 whileHover={{ scale: 1.1 }}
