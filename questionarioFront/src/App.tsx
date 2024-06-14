@@ -3,6 +3,8 @@ import QuestionarioThumb from './components/QuestionarioThumb';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { questionariosAtom } from './lib/atom';
+import Navbar from './components/Navbar';
+
 
 interface Question {
   id: number;
@@ -45,7 +47,7 @@ function App() {
 
   return (
     <div className='min-h-screen bg-gray-900 text-white'>
-      <h1 className='p-4 text-4xl font-bold text-center'>Bem-vindo ao App</h1>
+      <Navbar/>
 
       <div className='p-4'>
         <h2 className='text-2xl font-bold text-center'>Questionários</h2>
