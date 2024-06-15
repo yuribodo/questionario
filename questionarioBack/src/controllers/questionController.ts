@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 import { Request, Response } from "express";
 const prisma = new PrismaClient();
 
+// Retorna todas as perguntas
 export const getAllQuestions = async (req: Request, res: Response) => {
   try {
     const questions = await prisma.question.findMany();
@@ -11,6 +12,7 @@ export const getAllQuestions = async (req: Request, res: Response) => {
   }
 };
 
+// Retorna uma pergunta pelo ID
 export const getQuestionById = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
@@ -25,6 +27,7 @@ export const getQuestionById = async (req: Request, res: Response) => {
   }
 };
 
+// Cria uma nova pergunta
 export const createQuestion = async (req: Request, res: Response) => {
   const { type, question, choices, correctChoice, questionarioId } = req.body;
   try {
@@ -37,6 +40,7 @@ export const createQuestion = async (req: Request, res: Response) => {
   }
 };
 
+// Atualiza uma pergunta existente
 export const updateQuestion = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { type, question, choices, correctChoice } = req.body;
@@ -51,6 +55,7 @@ export const updateQuestion = async (req: Request, res: Response) => {
   }
 };
 
+// Deleta uma pergunta
 export const deleteQuestion = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {

@@ -13,11 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum QuestionType {
+  OBJETIVA
+  DISCURSIVA
+}
+
 model Questionario {
   id          Int        @id @default(autoincrement())
   title       String
   description String
   questions   Question[]
+  respostas   Resposta[]
 }
 
 model Question {
@@ -28,11 +34,21 @@ model Question {
   correctChoice     String?
   questionarioId    Int
   questionario      Questionario @relation(fields: [questionarioId], references: [id])
+  respostas         Resposta[]
 
   @@index([questionarioId])
 }
 
-enum QuestionType {
-  objetiva
-  discursiva
+model Resposta {
+  id              Int       @id @default(autoincrement())
+  usuarioId       Int
+  questionarioId  Int
+  questionId      Int
+  resposta        String    // Pode ser ajustado para o tipo apropriado, dependendo do formato da resposta (por exemplo, String para texto, Int para ID de escolha, etc.)
+  createdAt       DateTime  @default(now())
+  questionario    Questionario @relation(fields: [questionarioId], references: [id])
+  question        Question   @relation(fields: [questionId], references: [id])
+
+  @@index([usuarioId])
+  @@index([questionarioId])
 }
