@@ -58,11 +58,22 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
     }
   }, [questionario, reset, answer]);
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    setAnswer(data);
-    setSubmittedAnswers(data);
-    setModalVisible(true);
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await axios.post(`http://192.168.100.211:8080/respostas/submit`, {
+        usuarioId: 1, // Preencha com o ID do usuário logado ou alguma lógica para identificar o usuário
+        questionarioId: questionarioIdNumber,
+        respostas: Object.keys(data.questions).map((key) => ({
+          questionId: parseInt(key.split('.')[1], 10),
+          resposta: data.questions[key as keyof typeof data.questions], // Utilização da notação de índice explícito
+        })),
+      });
+  
+      setSubmittedAnswers(data);
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error submitting answers:', error);
+    }
   };
 
   const handleModalClose = () => {
@@ -110,11 +121,11 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
               <div className='bg-gray-800 p-4 rounded-md mb-4'>
                 <p>{question.question}</p>
               </div>
-              {question.type === 'objetiva' && (
+              {question.type === 'OBJETIVA' && (
                 <div className='flex flex-col space-y-2'>
                   {question.choices.map((choice, index) => (
                     <label
-                      key={index}
+                      key={`${question.id}-${index}`} // Chave única para cada input
                       className={`p-2 rounded-md cursor-pointer flex items-center space-x-3 ${
                         answer[`questions.${question.id}`] === choice ? 'bg-blue-900 text-white' : 'bg-gray-700'
                       }`}
@@ -130,7 +141,7 @@ function Questionario({ questionarioId }: { questionarioId: string }) {
                   ))}
                 </div>
               )}
-              {question.type === 'discursiva' && (
+              {question.type === 'DISCURSIVA' && (
                 <div className='bg-gray-700 p-3 mt-2 rounded-md'>
                   <textarea
                     {...register(`questions.${question.id}`, { required: true })}
