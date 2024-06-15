@@ -16,7 +16,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 
 interface Question {
-  type: 'objetiva' | 'discursiva';
+  type: 'OBJETIVA' | 'DISCURSIVA';
   question: string;
   choices: string[];
   correctChoice: string;
@@ -27,13 +27,13 @@ const CreateQuestionario = () => {
     defaultValues: {
       title: '',
       description: '',
-      questions: [{ type: 'objetiva', question: '', choices: [], correctChoice: '' }],
+      questions: [{ type: 'OBJETIVA', question: '', choices: [], correctChoice: '' }],
     },
   });
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([
-    { type: 'objetiva', question: '', choices: [], correctChoice: '' },
+    { type: 'OBJETIVA', question: '', choices: [], correctChoice: '' },
   ]);
 
   const handleQuestionChange = (index: number, field: keyof Question, value: string) => {
@@ -54,7 +54,7 @@ const CreateQuestionario = () => {
   };
 
   const addQuestion = () => {
-    setQuestions([...questions, { type: 'objetiva', question: '', choices: [], correctChoice: '' }]);
+    setQuestions([...questions, { type: 'OBJETIVA', question: '', choices: [], correctChoice: '' }]);
   };
 
   const addChoice = (index: number) => {
@@ -78,9 +78,9 @@ const CreateQuestionario = () => {
       reset({
         title: '',
         description: '',
-        questions: [{ type: 'objetiva', question: '', choices: [], correctChoice: '' }],
+        questions: [{ type: 'OBJETIVA', question: '', choices: [], correctChoice: '' }],
       });
-      setQuestions([{ type: 'objetiva', question: '', choices: [], correctChoice: '' }]);
+      setQuestions([{ type: 'OBJETIVA', question: '', choices: [], correctChoice: '' }]);
 
       // Remover mensagem de sucesso após 5 segundos
       setTimeout(() => setSuccessMessage(null), 5000);
@@ -158,8 +158,8 @@ const CreateQuestionario = () => {
                       required
                       style={{ color: 'white' }}
                     >
-                      <MenuItem value="objetiva">Objetiva</MenuItem>
-                      <MenuItem value="discursiva">Discursiva</MenuItem>
+                      <MenuItem value="OBJETIVA">Objetiva</MenuItem>
+                      <MenuItem value="DISCURSIVA">Discursiva</MenuItem>
                     </Select>
                   </FormControl>
                   <TextField
@@ -173,7 +173,7 @@ const CreateQuestionario = () => {
                     InputLabelProps={{ style: { color: 'white' } }}
                     InputProps={{ style: { color: 'white' } }}
                   />
-                  {question.type === 'objetiva' && (
+                  {question.type === 'OBJETIVA' && (
                     <div>
                       <Typography variant="body1" component="label" style={{ display: 'block', marginBottom: '0.5rem' }}>
                         Opções
