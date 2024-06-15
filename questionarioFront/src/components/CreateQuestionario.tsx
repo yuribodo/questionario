@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import {
@@ -13,6 +13,7 @@ import {
   Paper,
   Snackbar,
 } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 
 interface Question {
   type: 'objetiva' | 'discursiva';
@@ -22,17 +23,28 @@ interface Question {
 }
 
 const CreateQuestionario = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [questions, setQuestions] = useState<Question[]>([
-    { type: 'objetiva', question: '', choices: [], correctChoice: '' }
-  ]);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      title: '',
+      description: '',
+      questions: [{ type: 'objetiva', question: '', choices: [], correctChoice: '' }],
+    },
+  });
 
-  const handleQuestionChange = (index: number, field: keyof Omit<Question, 'choices'>, value: string) => {
-    const newQuestions = [...questions];
-    newQuestions[index][field] = value as any;
-    setQuestions(newQuestions);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [questions, setQuestions] = useState<Question[]>([
+    { type: 'objetiva', question: '', choices: [], correctChoice: '' },
+  ]);
+
+  const handleQuestionChange = (index: number, field: keyof Question, value: string) => {
+    setQuestions(prevQuestions => {
+      const newQuestions = [...prevQuestions];
+      newQuestions[index] = {
+        ...newQuestions[index],
+        [field]: value
+      };
+      return newQuestions;
+    });
   };
 
   const handleChoiceChange = (index: number, choiceIndex: number, value: string) => {
@@ -51,22 +63,23 @@ const CreateQuestionario = () => {
     setQuestions(newQuestions);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: any) => {
     try {
       const response = await axios.post('http://192.168.100.211:8080/questionarios/with-questions', {
-        title,
-        description,
-        questions,
+        title: data.title,
+        description: data.description,
+        questions: questions,
       });
       console.log('Questionário criado com sucesso:', response.data);
 
-      // Exibir mensagem de sucesso
       setSuccessMessage('Questionário criado com sucesso! 🎉');
 
-      // Redefinir o formulário
-      setTitle('');
-      setDescription('');
+      // Resetar o formulário e as perguntas após o envio bem-sucedido
+      reset({
+        title: '',
+        description: '',
+        questions: [{ type: 'objetiva', question: '', choices: [], correctChoice: '' }],
+      });
       setQuestions([{ type: 'objetiva', question: '', choices: [], correctChoice: '' }]);
 
       // Remover mensagem de sucesso após 5 segundos
@@ -77,168 +90,172 @@ const CreateQuestionario = () => {
   };
 
   return (
-    <div className=' bg-gray-800 gray p-8'>
-        <Container component="main" maxWidth="md">
-      <Paper elevation={3} style={{ padding: '2rem', backgroundColor: '#1e293b', color: 'white' }}>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Typography variant="h4" component="h1" gutterBottom>
-            Criar Questionário
-          </Typography>
-        </motion.div>
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <TextField
-            label="Título"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            InputLabelProps={{ style: { color: 'white' } }}
-            InputProps={{ style: { color: 'white' } }}
-          />
-          <TextField
-            label="Descrição"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            multiline
-            rows={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            InputLabelProps={{ style: { color: 'white' } }}
-            InputProps={{ style: { color: 'white' } }}
-          />
-          <div>
-            <Typography variant="h5" component="h2" gutterBottom>
-              Perguntas
+    <div className="bg-gray-800 gray p-8">
+      <Container component="main" maxWidth="md">
+        <Paper elevation={3} style={{ padding: '2rem', backgroundColor: '#1e293b', color: 'white' }}>
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              Criar Questionário
             </Typography>
-            {questions.map((question, index) => (
-              <motion.div
-                key={index}
-                className="mb-6 p-4 bg-slate-700 rounded"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <FormControl variant="outlined" fullWidth margin="normal">
-                  <InputLabel>Tipo</InputLabel>
-                  <Select
-                    value={question.type}
-                    onChange={(e) => handleQuestionChange(index, 'type', e.target.value)}
-                    label="Tipo"
-                    required
-                    style={{ color: 'white' }}
-                  >
-                    <MenuItem value="objetiva">Objetiva</MenuItem>
-                    <MenuItem value="discursiva">Discursiva</MenuItem>
-                  </Select>
-                </FormControl>
+          </motion.div>
+          <motion.form onSubmit={handleSubmit(onSubmit)} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <Controller
+              name="title"
+              control={control}
+              rules={{ required: 'Título é obrigatório' }}
+              render={({ field, fieldState }) => (
                 <TextField
-                  label="Pergunta"
+                  {...field}
+                  label="Título"
                   variant="outlined"
                   fullWidth
                   margin="normal"
-                  value={question.question}
-                  onChange={(e) => handleQuestionChange(index, 'question', e.target.value)}
-                  required
+                  error={!!fieldState.error}
+                  helperText={fieldState.error ? fieldState.error.message : null}
                   InputLabelProps={{ style: { color: 'white' } }}
                   InputProps={{ style: { color: 'white' } }}
                 />
-                {question.type === 'objetiva' && (
-                  <div>
-                    <Typography variant="body1" component="label" style={{ display: 'block', marginBottom: '0.5rem' }}>
-                      Opções
-                    </Typography>
-                    {question.choices.map((choice, choiceIndex) => (
-                      <TextField
-                        key={choiceIndex}
-                        label={`Opção ${choiceIndex + 1}`}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        value={choice}
-                        onChange={(e) => handleChoiceChange(index, choiceIndex, e.target.value)}
-                        required
-                        InputLabelProps={{ style: { color: 'white' } }}
-                        InputProps={{ style: { color: 'white' } }}
-                      />
-                    ))}
-                    <Button
-                      type="button"
-                      onClick={() => addChoice(index)}
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      style={{ marginTop: '1rem' }}
+              )}
+            />
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: 'Descrição é obrigatória' }}
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  label="Descrição"
+                  variant="outlined"
+                  fullWidth
+                  margin="normal"
+                  multiline
+                  rows={4}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error ? fieldState.error.message : null}
+                  InputLabelProps={{ style: { color: 'white' } }}
+                  InputProps={{ style: { color: 'white' } }}
+                />
+              )}
+            />
+            <div>
+              <Typography variant="h5" component="h2" gutterBottom>
+                Perguntas
+              </Typography>
+              {questions.map((question, index) => (
+                <motion.div
+                  key={index}
+                  className="mb-6 p-4 bg-slate-700 rounded"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FormControl variant="outlined" fullWidth margin="normal">
+                    <InputLabel>Tipo</InputLabel>
+                    <Select
+                      value={question.type}
+                      onChange={(e) => handleQuestionChange(index, 'type', e.target.value)}
+                      label="Tipo"
+                      required
+                      style={{ color: 'white' }}
                     >
-                      Adicionar Pergunta
-                    </Button>
-                    <FormControl variant="outlined" fullWidth margin="normal" style={{ marginTop: '1rem' }}>
-                      <InputLabel>Resposta Correta</InputLabel>
-                      <Select
-                        value={question.correctChoice}
-                        onChange={(e) => handleQuestionChange(index, 'correctChoice', e.target.value)}
-                        label="Resposta Correta"
-                        required
-                        style={{ color: 'white' }}
+                      <MenuItem value="objetiva">Objetiva</MenuItem>
+                      <MenuItem value="discursiva">Discursiva</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    label="Pergunta"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={question.question}
+                    onChange={(e) => handleQuestionChange(index, 'question', e.target.value)}
+                    required
+                    InputLabelProps={{ style: { color: 'white' } }}
+                    InputProps={{ style: { color: 'white' } }}
+                  />
+                  {question.type === 'objetiva' && (
+                    <div>
+                      <Typography variant="body1" component="label" style={{ display: 'block', marginBottom: '0.5rem' }}>
+                        Opções
+                      </Typography>
+                      {question.choices.map((choice, choiceIndex) => (
+                        <TextField
+                          key={choiceIndex}
+                          label={`Opção ${choiceIndex + 1}`}
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          value={choice}
+                          onChange={(e) => handleChoiceChange(index, choiceIndex, e.target.value)}
+                          required
+                          InputLabelProps={{ style: { color: 'white' } }}
+                          InputProps={{ style: { color: 'white' } }}
+                        />
+                      ))}
+                      <Button
+                        type="button"
+                        onClick={() => addChoice(index)}
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        style={{ marginTop: '1rem' }}
                       >
-                        <MenuItem value="">Selecione a resposta correta</MenuItem>
-                        {question.choices.map((choice, choiceIndex) => (
-                          <MenuItem key={choiceIndex} value={choice}>
-                            {choice}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
-                )}
-              </motion.div>
-            ))}
+                        Adicionar Opção
+                      </Button>
+                      <FormControl variant="outlined" fullWidth margin="normal" style={{ marginTop: '1rem' }}>
+                        <InputLabel>Resposta Correta</InputLabel>
+                        <Select
+                          value={question.correctChoice}
+                          onChange={(e) => handleQuestionChange(index, 'correctChoice', e.target.value)}
+                          label="Resposta Correta"
+                          required
+                          style={{ color: 'white' }}
+                        >
+                          <MenuItem value="">Selecione a resposta correta</MenuItem>
+                          {question.choices.map((choice, choiceIndex) => (
+                            <MenuItem key={choiceIndex} value={choice}>
+                              {choice}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+              <Button
+                type="button"
+                onClick={() => addQuestion()}
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{ marginTop: '1rem' }}
+              >
+                Adicionar Pergunta
+              </Button>
+            </div>
             <Button
-              type="button"
-              onClick={() => addQuestion()}
+              type="submit"
               variant="contained"
-              color="primary"
+              color="success"
               fullWidth
-              style={{ marginTop: '1rem' }}
+              style={{ marginTop: '2rem' }}
             >
-              Adicionar Pergunta
+              Criar Questionário
             </Button>
-          </div>
-          <Button
-            type="submit"
-            variant="contained"
-            color="success"
-            fullWidth
-            style={{ marginTop: '2rem' }}
-          >
-            Criar Questionário
-          </Button>
-        </motion.form>
-        {successMessage && (
-          <Snackbar
-            open={true}
-            autoHideDuration={5000}
-            onClose={() => setSuccessMessage(null)}
-            message={successMessage}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          />
-        )}
-      </Paper>
-    </Container>
+          </motion.form>
+          {successMessage && (
+            <Snackbar
+              open={true}
+              autoHideDuration={5000}
+              onClose={() => setSuccessMessage(null)}
+              message={successMessage}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            />
+          )}
+        </Paper>
+      </Container>
     </div>
-    
   );
 };
 
