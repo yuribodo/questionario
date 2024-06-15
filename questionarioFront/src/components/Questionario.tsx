@@ -81,7 +81,7 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
       <p className='text-center font-semibold text-2xl mb-8'>{questionario.description}</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {questionario.questions.map((question, questionIndex) => (
+        {questionario.questions.map((question) => (
           <div key={question.id} className='flex flex-col p-3'>
             <h2 className='font-semibold text-2xl mb-3'>{`Questão ${question.id}`}</h2>
             <div className='bg-gray-800 p-4 rounded-md mb-4'>
