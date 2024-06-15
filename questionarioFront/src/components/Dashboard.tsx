@@ -135,7 +135,7 @@ const Dashboard = () => {
         {selectedTab === 'responses' && (
           <>
             <h2 className="text-2xl font-bold mb-4">Responses</h2>
-            <div className="border border-gray-300 p-4 rounded bg-white shadow-md">
+            <div className={`border border-gray-300 p-4 rounded shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
               {/* Mostra o questionário selecionado */}
               {selectedQuestionnaire ? (
                 <>
