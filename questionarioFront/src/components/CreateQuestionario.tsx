@@ -40,7 +40,7 @@ const CreateQuestionario = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/questionarios/with-questions', {
+      const response = await axios.post('http://192.168.100.211:8080/questionarios/with-questions', {
         title,
         description,
         questions,
