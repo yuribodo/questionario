@@ -68,3 +68,24 @@ export const deleteQuestionario = async (req: Request, res: Response) => {
   }
 };
 
+export const createQuestionarioWithQuestions = async (req: Request, res: Response) => {
+  const { title, description, questions } = req.body;
+
+  try {
+    const newQuestionario = await prisma.questionario.create({
+      data: {
+        title,
+        description,
+        questions: {
+          create: questions,
+        },
+      },
+      include: {
+        questions: true,
+      },
+    });
+    res.status(201).json(newQuestionario);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
