@@ -3,22 +3,36 @@ import { Request, Response } from 'express';
 const prisma = new PrismaClient();
 
 export const submitResposta = async (req: Request, res: Response) => {
-  const { usuarioId, questionarioId, questionId, resposta } = req.body;
+  const { usuarioId, questionarioId, respostas } = req.body;
   try {
-    const novaResposta = await prisma.resposta.create({
-      data: {
-        usuarioId: parseInt(usuarioId),
-        questionarioId: parseInt(questionarioId),
-        questionId: parseInt(questionId),
-        resposta,
-      },
-    });
-    res.status(201).json(novaResposta);
+    const parsedUsuarioId = parseInt(usuarioId, 10);
+    const parsedQuestionarioId = parseInt(questionarioId, 10);
+
+    if (isNaN(parsedUsuarioId) || isNaN(parsedQuestionarioId)) {
+      return res.status(400).json({ error: 'Invalid user ID or questionnaire ID' });
+    }
+
+    const novasRespostas = await prisma.$transaction(
+      respostas.map((resposta: { questionId: string; resposta: string }) => {
+        const parsedQuestionId = parseInt(resposta.questionId, 10);
+        return prisma.resposta.create({
+          data: {
+            usuarioId: parsedUsuarioId,
+            questionarioId: parsedQuestionarioId,
+            questionId: parsedQuestionId,
+            resposta: resposta.resposta,
+          },
+        });
+      })
+    );
+
+    res.status(201).json(novasRespostas);
   } catch (error) {
-    console.error('Erro ao criar resposta:', error);
+    console.error('Erro ao criar respostas:', error, req.body);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 export const getRespostasByQuestionarioId = async (req: Request, res: Response) => {
   const { questionarioId } = req.params;
