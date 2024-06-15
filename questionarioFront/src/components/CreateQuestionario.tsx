@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 interface Question {
   type: 'objetiva' | 'discursiva';
@@ -65,8 +66,20 @@ const CreateQuestionario = () => {
 
   return (
     <div className="min-h-screen bg-slate-800 text-white p-8">
-      <h1 className="text-3xl font-bold mb-6">Criar Questionário</h1>
-      <form onSubmit={handleSubmit}>
+      <motion.h1
+        className="text-3xl font-bold mb-6"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        Criar Questionário
+      </motion.h1>
+      <motion.form
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Título</label>
           <input
@@ -91,7 +104,13 @@ const CreateQuestionario = () => {
         <div>
           <h2 className="text-2xl font-semibold mb-4">Perguntas</h2>
           {questions.map((question, index) => (
-            <div key={index} className="mb-6 p-4 bg-slate-700 rounded">
+            <motion.div
+              key={index}
+              className="mb-6 p-4 bg-slate-700 rounded"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3 }}
+            >
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2">Tipo</label>
                 <select
@@ -119,54 +138,76 @@ const CreateQuestionario = () => {
                 <div>
                   <label className="block text-sm font-medium mb-2">Opções</label>
                   {question.choices.map((choice, choiceIndex) => (
-                    <input
+                    <motion.input
                       key={choiceIndex}
                       type="text"
                       placeholder={`Opção ${choiceIndex + 1}`}
                       value={choice}
                       onChange={(e) => handleChoiceChange(index, choiceIndex, e.target.value)}
                       className="w-full p-2 mb-2 bg-slate-900 border border-slate-600 rounded"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.2, delay: choiceIndex * 0.1 }}
                       required
                     />
                   ))}
-                  <button
+                  <motion.button
                     type="button"
                     onClick={() => addChoice(index)}
                     className="w-full p-2 bg-slate-600 border border-slate-500 rounded"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     Adicionar Opção
-                  </button>
+                  </motion.button>
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium mb-2">Resposta Correta</label>
+                    <select
+                      value={question.correctChoice}
+                      onChange={(e) => handleQuestionChange(index, 'correctChoice', e.target.value)}
+                      className="w-full p-2 bg-slate-900 border border-slate-600 rounded"
+                      required
+                    >
+                      <option value="">Selecione a resposta correta</option>
+                      {question.choices.map((choice, choiceIndex) => (
+                        <option key={choiceIndex} value={choice}>
+                          {choice}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               )}
-              <div className="mt-4">
-                <label className="block text-sm font-medium mb-2">Resposta Correta</label>
-                <input
-                  type="text"
-                  placeholder="Resposta correta"
-                  value={question.correctChoice}
-                  onChange={(e) => handleQuestionChange(index, 'correctChoice', e.target.value)}
-                  className="w-full p-2 bg-slate-900 border border-slate-600 rounded"
-                  required
-                />
-              </div>
-            </div>
+            </motion.div>
           ))}
-          <button
+          <motion.button
             type="button"
             onClick={addQuestion}
             className="w-full p-2 bg-slate-600 border border-slate-500 rounded mt-4"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             Adicionar Pergunta
-          </button>
+          </motion.button>
         </div>
-        <button type="submit" className="w-full p-2 bg-green-600 border border-green-500 rounded mt-6">
+        <motion.button
+          type="submit"
+          className="w-full p-2 bg-green-600 border border-green-500 rounded mt-6"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           Criar Questionário
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
       {successMessage && (
-        <div className="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded shadow-lg animate-bounce">
+        <motion.div
+          className="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded shadow-lg"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           {successMessage}
-        </div>
+        </motion.div>
       )}
     </div>
   );
