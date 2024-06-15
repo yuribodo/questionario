@@ -14,6 +14,7 @@ const CreateQuestionario = () => {
   const [questions, setQuestions] = useState<Question[]>([
     { type: 'objetiva', question: '', choices: [], correctChoice: '' }
   ]);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleQuestionChange = (index: number, field: keyof Omit<Question, 'choices'>, value: string) => {
     const newQuestions = [...questions];
@@ -46,7 +47,17 @@ const CreateQuestionario = () => {
         questions,
       });
       console.log('Questionário criado com sucesso:', response.data);
-      // Limpar o formulário ou redirecionar, se necessário
+
+      // Exibir mensagem de sucesso
+      setSuccessMessage('Questionário criado com sucesso! 🎉');
+
+      // Redefinir o formulário
+      setTitle('');
+      setDescription('');
+      setQuestions([{ type: 'objetiva', question: '', choices: [], correctChoice: '' }]);
+
+      // Remover mensagem de sucesso após 5 segundos
+      setTimeout(() => setSuccessMessage(null), 5000);
     } catch (error) {
       console.error('Erro ao criar questionário:', error);
     }
@@ -152,6 +163,11 @@ const CreateQuestionario = () => {
           Criar Questionário
         </button>
       </form>
+      {successMessage && (
+        <div className="fixed bottom-4 right-4 bg-green-600 text-white p-4 rounded shadow-lg animate-bounce">
+          {successMessage}
+        </div>
+      )}
     </div>
   );
 };
