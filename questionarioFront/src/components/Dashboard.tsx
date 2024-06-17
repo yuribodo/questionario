@@ -1,6 +1,7 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { Tooltip } from 'react-tooltip'
+import { Tooltip } from 'react-tooltip';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from 'recharts';
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('overview');
@@ -21,9 +22,13 @@ const Dashboard = () => {
         { id: 2, question: 'Qual é o seu animal favorito?', correctAnswer: 'Cachorro' },
       ],
       userResponses: [
-        { userId: 1, answers: ['Azul', 'Gato'] },
-        { userId: 2, answers: ['Vermelho', 'Cachorro'] },
-        { userId: 3, answers: ['Azul', 'Cachorro'] },
+        { userId: 1, answers: ['Azul', 'Gato'], date: '2023-01-01' },
+        { userId: 2, answers: ['Vermelho', 'Cachorro'], date: '2023-01-02' },
+        { userId: 3, answers: ['Azul', 'Cachorro'], date: '2023-01-03' },
+        { userId: 4, answers: ['Azul', 'Cachorro'], date: '2023-01-04' },
+        { userId: 5, answers: ['Verde', 'Coelho'], date: '2023-01-05' },
+        { userId: 6, answers: ['Amarelo', 'Cachorro'], date: '2023-01-06' },
+        { userId: 7, answers: ['Azul', 'Cachorro'], date: '2023-01-07' },
       ],
     },
     {
@@ -34,9 +39,13 @@ const Dashboard = () => {
         { id: 2, question: 'Qual é o seu esporte favorito?', correctAnswer: 'Futebol' },
       ],
       userResponses: [
-        { userId: 1, answers: ['Pizza', 'Basquete'] },
-        { userId: 2, answers: ['Hambúrguer', 'Futebol'] },
-        { userId: 3, answers: ['Pizza', 'Futebol'] },
+        { userId: 1, answers: ['Pizza', 'Basquete'], date: '2023-02-01' },
+        { userId: 2, answers: ['Hambúrguer', 'Futebol'], date: '2023-02-02' },
+        { userId: 3, answers: ['Pizza', 'Futebol'], date: '2023-02-03' },
+        { userId: 4, answers: ['Pizza', 'Futebol'], date: '2023-02-04' },
+        { userId: 5, answers: ['Pizza', 'Futebol'], date: '2023-02-05' },
+        { userId: 6, answers: ['Pizza', 'Basquete'], date: '2023-02-06' },
+        { userId: 7, answers: ['Hambúrguer', 'Futebol'], date: '2023-02-07' },
       ],
     },
     // Adicione mais questionários conforme necessário
@@ -56,13 +65,31 @@ const Dashboard = () => {
 
   const handleQuestionnaireSelect = (questionnaire: any) => {
     setSelectedQuestionnaire(questionnaire);
-    setSelectedTab('responses'); // Mudar para a aba de respostas ao selecionar um questionário
+    setSelectedTab('analytics'); // Mudar para a aba de analytics ao selecionar um questionário
   };
 
   const calculateCorrectAnswers = (userAnswers: any, correctAnswers: any) => {
     return userAnswers.reduce((count: any, answer: any, index: any) => {
       return count + (answer === correctAnswers[index] ? 1 : 0);
     }, 0);
+  };
+
+  const prepareAnalyticsData = (questionnaire: any) => {
+    const data: { name: string; Responses: number }[] = [];
+
+    questionnaire.userResponses.forEach((response: any) => {
+      const existingData = data.find((d) => d.name === response.date);
+      if (existingData) {
+        existingData.Responses += 1;
+      } else {
+        data.push({ name: response.date, Responses: 1 });
+      }
+    });
+
+    // Sort data by date
+    data.sort((a, b) => new Date(a.name).getTime() - new Date(b.name).getTime());
+
+    return data;
   };
 
   return (
@@ -161,10 +188,26 @@ const Dashboard = () => {
             <p>Here is the overview content...</p>
           </>
         )}
-        {selectedTab === 'analytics' && (
+        {selectedTab === 'analytics' && selectedQuestionnaire && (
           <>
-            <h2 className="text-2xl font-bold mb-4">Analytics</h2>
-            <p>Here is the analytics content...</p>
+            <h2 className="text-2xl font-bold mb-4">Analytics - {selectedQuestionnaire.title}</h2>
+            <div className={`border border-gray-300 p-4 rounded shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
+              <LineChart
+                width={600}
+                height={300}
+                data={prepareAnalyticsData(selectedQuestionnaire)}
+                margin={{
+                  top: 5, right: 30, left: 20, bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <RechartsTooltip />
+                <Legend />
+                <Line type="monotone" dataKey="Responses" stroke="#8884d8" activeDot={{ r: 8 }} />
+              </LineChart>
+            </div>
           </>
         )}
         {selectedTab === 'responses' && (
