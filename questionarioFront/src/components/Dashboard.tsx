@@ -6,10 +6,39 @@ const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [darkTheme, setDarkTheme] = useState(true);
-  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<{ id: number; title: string; responses: any } | null>(null);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<{
+    id: number;
+    title: string;
+    questions: { id: number; question: string; correctAnswer: string }[];
+    userResponses: { userId: number; answers: string[] }[];
+  } | null>(null);
   const [questionnaires] = useState([
-    { id: 1, title: 'Questionnaire 1', responses: { /* Respostas do questionário 1 */ } },
-    { id: 2, title: 'Questionnaire 2', responses: { /* Respostas do questionário 2 */ } },
+    {
+      id: 1,
+      title: 'Questionnaire 1',
+      questions: [
+        { id: 1, question: 'Qual é a sua cor favorita?', correctAnswer: 'Azul' },
+        { id: 2, question: 'Qual é o seu animal favorito?', correctAnswer: 'Cachorro' },
+      ],
+      userResponses: [
+        { userId: 1, answers: ['Azul', 'Gato'] },
+        { userId: 2, answers: ['Vermelho', 'Cachorro'] },
+        { userId: 3, answers: ['Azul', 'Cachorro'] },
+      ],
+    },
+    {
+      id: 2,
+      title: 'Questionnaire 2',
+      questions: [
+        { id: 1, question: 'Qual é a sua comida favorita?', correctAnswer: 'Pizza' },
+        { id: 2, question: 'Qual é o seu esporte favorito?', correctAnswer: 'Futebol' },
+      ],
+      userResponses: [
+        { userId: 1, answers: ['Pizza', 'Basquete'] },
+        { userId: 2, answers: ['Hambúrguer', 'Futebol'] },
+        { userId: 3, answers: ['Pizza', 'Futebol'] },
+      ],
+    },
     // Adicione mais questionários conforme necessário
   ]);
 
@@ -28,6 +57,12 @@ const Dashboard = () => {
   const handleQuestionnaireSelect = (questionnaire: any) => {
     setSelectedQuestionnaire(questionnaire);
     setSelectedTab('responses'); // Mudar para a aba de respostas ao selecionar um questionário
+  };
+
+  const calculateCorrectAnswers = (userAnswers: any, correctAnswers: any) => {
+    return userAnswers.reduce((count: any, answer: any, index: any) => {
+      return count + (answer === correctAnswers[index] ? 1 : 0);
+    }, 0);
   };
 
   return (
@@ -140,24 +175,29 @@ const Dashboard = () => {
               {selectedQuestionnaire ? (
                 <>
                   <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                  {/* Placeholder para mostrar as respostas do questionário */}
                   <p className="text-gray-600">Aqui você pode exibir as respostas recebidas para este questionário.</p>
-                  {/* Exemplo simples de exibição de respostas */}
                   <div className="mt-4">
-                    {/* Substitua isso com lógica para exibir as respostas reais */}
-                    <p className="font-bold">Pergunta 1: Qual é a sua cor favorita?</p>
-                    <ul className="list-disc pl-4 mt-2">
-                      <li>Resposta 1 - 20 respostas</li>
-                      <li>Resposta 2 - 15 respostas</li>
-                      <li>Resposta 3 - 10 respostas</li>
-                    </ul>
+                    {selectedQuestionnaire.userResponses.map((response, index) => (
+                      <div key={index} className="mb-4 p-4 border border-gray-400 rounded">
+                        <h4 className="font-bold">User {response.userId}</h4>
+                        <ul className="list-disc pl-4 mt-2">
+                          {response.answers.map((answer, i) => (
+                            <li key={i}>
+                              {selectedQuestionnaire.questions[i].question} - Sua resposta: {answer} {answer === selectedQuestionnaire.questions[i].correctAnswer ? '✔️' : '❌'}
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="font-bold mt-2">
+                          Questões corretas: {calculateCorrectAnswers(response.answers, selectedQuestionnaire.questions.map(q => q.correctAnswer))}
+                        </p>
+                      </div>
+                    ))}
                   </div>
                 </>
               ) : (
                 <p className="text-gray-600">Selecione um questionário para ver as respostas.</p>
               )}
             </div>
-            {/* Lista de questionários disponíveis para seleção */}
             <div className="mt-4">
               <h3 className="text-lg font-bold mb-2">Selecione um questionário:</h3>
               <ul>
