@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Tooltip } from 'react-tooltip';
 import LineGraph from './Graph/Line';
+import PieGraph from './Graph/Pie';
 
 
 
@@ -210,9 +211,10 @@ const Dashboard = () => {
             {selectedQuestionnaire ? (
               <>
                 <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                <div className={`border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
+                <div className={` flex border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
                  
                   <LineGraph/>
+                  <PieGraph/>
                 </div>
               </>
             ) : (
