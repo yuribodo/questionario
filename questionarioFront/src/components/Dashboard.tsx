@@ -1,18 +1,15 @@
 import { useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Tooltip } from 'react-tooltip';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend } from 'recharts';
+import LineGraph from './Graph/Line';
+
+
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [darkTheme, setDarkTheme] = useState(true);
-  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<{
-    id: number;
-    title: string;
-    questions: { id: number; question: string; correctAnswer: string }[];
-    userResponses: { userId: number; answers: string[] }[];
-  } | null>(null);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
   const [questionnaires] = useState([
     {
       id: 1,
@@ -48,7 +45,7 @@ const Dashboard = () => {
         { userId: 7, answers: ['Hambúrguer', 'Futebol'], date: '2023-02-07' },
       ],
     },
-    // Adicione mais questionários conforme necessário
+    // Add more questionnaires as needed
   ]);
 
   const handleTabChange = (tab: any) => {
@@ -65,7 +62,7 @@ const Dashboard = () => {
 
   const handleQuestionnaireSelect = (questionnaire: any) => {
     setSelectedQuestionnaire(questionnaire);
-    setSelectedTab('analytics'); // Mudar para a aba de analytics ao selecionar um questionário
+     // Switch to analytics tab when a questionnaire is selected
   };
 
   const calculateCorrectAnswers = (userAnswers: any, correctAnswers: any) => {
@@ -75,10 +72,10 @@ const Dashboard = () => {
   };
 
   const prepareAnalyticsData = (questionnaire: any) => {
-    const data: { name: string; Responses: number }[] = [];
+    const data: any = [];
 
     questionnaire.userResponses.forEach((response: any) => {
-      const existingData = data.find((d) => d.name === response.date);
+      const existingData = data.find((d: any) => d.name === response.date);
       if (existingData) {
         existingData.Responses += 1;
       } else {
@@ -87,7 +84,7 @@ const Dashboard = () => {
     });
 
     // Sort data by date
-    data.sort((a, b) => new Date(a.name).getTime() - new Date(b.name).getTime());
+    data.sort((a: any, b: any) => new Date(a.name).getTime() - new Date(b.name).getTime());
 
     return data;
   };
@@ -104,7 +101,7 @@ const Dashboard = () => {
                 onClick={() => handleTabChange('overview')}
                 className={`w-full py-2 px-4 rounded mb-2 ${
                   selectedTab === 'overview'
-                    ? (darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800')
+                    ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
                     : 'hover:bg-gray-700'
                 }`}
               >
@@ -116,7 +113,7 @@ const Dashboard = () => {
                 onClick={() => handleTabChange('analytics')}
                 className={`w-full py-2 px-4 rounded mb-2 ${
                   selectedTab === 'analytics'
-                    ? (darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800')
+                    ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
                     : 'hover:bg-gray-700'
                 }`}
               >
@@ -128,7 +125,7 @@ const Dashboard = () => {
                 onClick={() => handleTabChange('responses')}
                 className={`w-full py-2 px-4 rounded mb-2 ${
                   selectedTab === 'responses'
-                    ? (darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800')
+                    ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
                     : 'hover:bg-gray-700'
                 }`}
               >
@@ -140,7 +137,7 @@ const Dashboard = () => {
                 onClick={() => handleTabChange('settings')}
                 className={`w-full py-2 px-4 rounded mb-2 ${
                   selectedTab === 'settings'
-                    ? (darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800')
+                    ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
                     : 'hover:bg-gray-700'
                 }`}
               >
@@ -165,7 +162,7 @@ const Dashboard = () => {
           </Tooltip>
           <button
             onClick={toggleSidebar}
-            className={` text-gray-700 px-4 py-2 rounded mr-4 ${darkTheme ? 'hover:bg-gray-400' : 'hover:bg-gray-200'}`}
+            className={`text-gray-700 px-4 py-2 rounded mr-4 ${darkTheme ? 'hover:bg-gray-400' : 'hover:bg-gray-200'}`}
           >
             {sidebarOpen ? (
               <FiChevronLeft className="text-xl my-anchor-element1" />
@@ -188,61 +185,47 @@ const Dashboard = () => {
             <p>Here is the overview content...</p>
           </>
         )}
-        {selectedTab === 'analytics' && selectedQuestionnaire && (
+        {selectedTab === 'analytics' && (
           <>
-            <h2 className="text-2xl font-bold mb-4">Analytics - {selectedQuestionnaire.title}</h2>
-            <div className={`border border-gray-300 p-4 rounded shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
-              <LineChart
-                width={600}
-                height={300}
-                data={prepareAnalyticsData(selectedQuestionnaire)}
-                margin={{
-                  top: 5, right: 30, left: 20, bottom: 5,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <RechartsTooltip />
-                <Legend />
-                <Line type="monotone" dataKey="Responses" stroke="#8884d8" activeDot={{ r: 8 }} />
-              </LineChart>
-            </div>
+            <h2 className="text-2xl font-bold mb-4">Analytics</h2>
+              <div className="mt-4">
+                <h3 className="text-lg font-bold mb-2">Select a Questionnaire:</h3>
+                <ul>
+                  {questionnaires.map((questionnaire) => (
+                    <li key={questionnaire.id} className="mb-2">
+                      <button
+                        onClick={() => handleQuestionnaireSelect(questionnaire)}
+                        className={`w-full py-2 px-4 rounded ${
+                          selectedQuestionnaire === questionnaire
+                            ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
+                            : 'hover:bg-gray-700'
+                        }`}
+                      >
+                        {questionnaire.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            {selectedQuestionnaire ? (
+              <>
+                <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
+                <div className={`border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
+                 
+                  <LineGraph/>
+                </div>
+              </>
+            ) : (
+              <p className="text-gray-600">Please select a questionnaire to view analytics.</p>
+            )}
+            
           </>
         )}
         {selectedTab === 'responses' && (
           <>
             <h2 className="text-2xl font-bold mb-4">Responses</h2>
-            <div className={`border border-gray-300 p-4 rounded shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
-              {/* Mostra o questionário selecionado */}
-              {selectedQuestionnaire ? (
-                <>
-                  <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                  <p className="text-gray-600">Aqui você pode exibir as respostas recebidas para este questionário.</p>
-                  <div className="mt-4">
-                    {selectedQuestionnaire.userResponses.map((response, index) => (
-                      <div key={index} className="mb-4 p-4 border border-gray-400 rounded">
-                        <h4 className="font-bold">User {response.userId}</h4>
-                        <ul className="list-disc pl-4 mt-2">
-                          {response.answers.map((answer, i) => (
-                            <li key={i}>
-                              {selectedQuestionnaire.questions[i].question} - Sua resposta: {answer} {answer === selectedQuestionnaire.questions[i].correctAnswer ? '✔️' : '❌'}
-                            </li>
-                          ))}
-                        </ul>
-                        <p className="font-bold mt-2">
-                          Questões corretas: {calculateCorrectAnswers(response.answers, selectedQuestionnaire.questions.map(q => q.correctAnswer))}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <p className="text-gray-600">Selecione um questionário para ver as respostas.</p>
-              )}
-            </div>
             <div className="mt-4">
-              <h3 className="text-lg font-bold mb-2">Selecione um questionário:</h3>
+              <h3 className="text-lg font-bold mb-2">Select a Questionnaire:</h3>
               <ul>
                 {questionnaires.map((questionnaire) => (
                   <li key={questionnaire.id} className="mb-2">
@@ -250,7 +233,7 @@ const Dashboard = () => {
                       onClick={() => handleQuestionnaireSelect(questionnaire)}
                       className={`w-full py-2 px-4 rounded ${
                         selectedQuestionnaire === questionnaire
-                          ? (darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800')
+                          ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
                           : 'hover:bg-gray-700'
                       }`}
                     >
@@ -260,6 +243,35 @@ const Dashboard = () => {
                 ))}
               </ul>
             </div>
+            <div className={`border border-gray-300 p-4 rounded shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
+              {/* Display selected questionnaire */}
+              {selectedQuestionnaire ? (
+                <>
+                  <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
+                  <p className="text-gray-600">Here you can view the received responses for this questionnaire.</p>
+                  <div className="mt-4">
+                    {selectedQuestionnaire.userResponses.map((response: any, index: any) => (
+                      <div key={index} className="mb-4 p-4 border border-gray-400 rounded">
+                        <h4 className="font-bold">User {response.userId}</h4>
+                        <ul className="list-disc pl-4 mt-2">
+                          {response.answers.map((answer: any, i: any) => (
+                            <li key={i}>
+                              {selectedQuestionnaire.questions[i].question} - Your answer: {answer} {answer === selectedQuestionnaire.questions[i].correctAnswer ? '✔️' : '❌'}
+                            </li>
+                          ))}
+                        </ul>
+                        <p className="font-bold mt-2">
+                          Correct answers: {calculateCorrectAnswers(response.answers, selectedQuestionnaire.questions.map(q => q.correctAnswer))}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="text-gray-600">Select a questionnaire to view the responses.</p>
+              )}
+            </div>
+            
           </>
         )}
         {selectedTab === 'settings' && (
