@@ -16,7 +16,7 @@ export const LineChartData = {
     ],
     datasets: [
         {
-            label: "Steps",
+            label: "Answers",
             data: [30, 50, 45, 60, 80, 70, 90, 50, 60, 70, 75, 70], // y
             borderColor: "red"
         }
