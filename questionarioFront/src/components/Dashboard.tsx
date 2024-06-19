@@ -98,6 +98,14 @@ const Dashboard = () => {
     questionnaire.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleFilterChange = (e) => {
+    setSelectedFilter(e.target.value);
+  };
+
   return (
     <div className={`relative flex ${darkTheme ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'}`}>
       {/* Sidebar */}
@@ -236,7 +244,9 @@ const Dashboard = () => {
               ))}
             </div>
           </>
+        
         )}
+        
         {selectedTab === 'analytics' && (
           <>
             <h2 className="text-2xl font-bold mb-4">Analytics</h2>

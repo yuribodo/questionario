@@ -47,9 +47,7 @@ function App() {
 
   return (
     <div className='min-h-screen bg-gray-900 text-white  space-y-14'>
-      <div>
-        <Navbar/>
-      </div>
+
       
 
       <div className='p-4'>

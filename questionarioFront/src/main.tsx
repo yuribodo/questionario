@@ -14,6 +14,8 @@ import CreateQuestionario from './components/CreateQuestionario'
 import Dashboard from './components/Dashboard'
 import Sobre from './components/Sobre'
 import EditQuestionnaire from './components/EditQuestionnaire'
+import Navbar from './components/Navbar'
+
 
 
 
@@ -37,14 +39,15 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Router>
       <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-        <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/questionario/:id" element={<QuestionarioWithId />} /> {/* Use a função de renderização QuestionarioWithId para passar o parâmetro id */}
-          <Route path='/createquestionario' element={<CreateQuestionario/>}/>
-          <Route path='/dashboard' element={<Dashboard/>}/>
-          <Route path='/sobre' element={<Sobre/>}/>
-          <Route path="dashboard/edit/:id" element={<EditQuestionnaire />} />
-        </Routes>
+        <Navbar />
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/questionario/:id" element={<QuestionarioWithId />} /> {/* Use a função de renderização QuestionarioWithId para passar o parâmetro id */}
+            <Route path='/createquestionario' element={<CreateQuestionario/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
+            <Route path='/sobre' element={<Sobre/>}/>
+            <Route path="dashboard/edit/:id" element={<EditQuestionnaire />} />
+          </Routes>
       </ClerkProvider>
     </Router>
   </React.StrictMode>
