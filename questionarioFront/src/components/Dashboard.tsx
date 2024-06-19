@@ -1,19 +1,57 @@
-import { useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Tooltip } from 'react-tooltip';
 import LineGraph from './Graph/Line';
 import PieGraph from './Graph/Pie';
 
-const Dashboard = () => {
-  const [selectedTab, setSelectedTab] = useState('overview');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [darkTheme, setDarkTheme] = useState(true);
-  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('all');
+interface Question {
+  id: number;
+  question: string;
+  correctAnswer: string;
+}
 
-  const [questionnaires] = useState([
+interface UserResponse {
+  userId: number;
+  answers: string[];
+  date: string;
+}
+
+interface Questionnaire {
+  id: number;
+  title: string;
+  category: string;
+  questions: Question[];
+  userResponses: UserResponse[];
+}
+
+interface AnalyticsData {
+  name: string; // Supondo que `name` seja uma data no formato string
+  Responses: number;
+}
+
+export interface GraphData {
+  datasets: {
+    label: string;
+    data: number[];
+    borderColor?: string;
+    backgroundColor?: string[];
+    hoverOffset?: number;
+  }[];
+  labels: string[];
+}
+
+
+
+const Dashboard = () => {
+  const [selectedTab, setSelectedTab] = useState<string>('overview');
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
+  const [darkTheme, setDarkTheme] = useState<boolean>(true);
+  const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedFilter, setSelectedFilter] = useState<string>('all');
+
+  const [questionnaires] = useState<Questionnaire[]>([
     {
       id: 1,
       title: 'Questionnaire 1',
@@ -50,10 +88,10 @@ const Dashboard = () => {
         { userId: 7, answers: ['Hambúrguer', 'Futebol'], date: '2023-02-07' },
       ],
     },
-    // Add more questionnaires as needed
+    // Adicionar mais questionários conforme necessário
   ]);
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab: string) => {
     setSelectedTab(tab);
   };
 
@@ -65,19 +103,19 @@ const Dashboard = () => {
     setDarkTheme(!darkTheme);
   };
 
-  const handleQuestionnaireSelect = (questionnaire) => {
+  const handleQuestionnaireSelect = (questionnaire: Questionnaire) => {
     setSelectedQuestionnaire(questionnaire);
   };
 
-  const calculateCorrectAnswers = (userAnswers, correctAnswers) => {
+  const calculateCorrectAnswers = (userAnswers: string[], correctAnswers: string[]) => {
     return userAnswers.reduce((count, answer, index) => {
       return count + (answer === correctAnswers[index] ? 1 : 0);
     }, 0);
   };
 
-  const prepareAnalyticsData = (questionnaire) => {
-    const data = [];
-
+  const prepareAnalyticsData = (questionnaire: Questionnaire): { data: GraphData } => {
+    const data: AnalyticsData[] = [];
+  
     questionnaire.userResponses.forEach((response) => {
       const existingData = data.find((d) => d.name === response.date);
       if (existingData) {
@@ -86,11 +124,23 @@ const Dashboard = () => {
         data.push({ name: response.date, Responses: 1 });
       }
     });
-
-    // Sort data by date
+  
+    // Ordenar dados por data
     data.sort((a, b) => new Date(a.name).getTime() - new Date(b.name).getTime());
-
-    return data;
+  
+    // Preparar os dados no formato esperado pelos gráficos
+    const graphData: GraphData = {
+      labels: data.map((item) => item.name),
+      datasets: [
+        {
+          label: 'Responses',
+          data: data.map((item) => item.Responses),
+          borderColor: 'red' // Exemplo de cor da borda
+        }
+      ]
+    };
+  
+    return { data: graphData };
   };
 
   const filteredQuestionnaires = questionnaires.filter((questionnaire) =>
@@ -98,11 +148,11 @@ const Dashboard = () => {
     questionnaire.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedFilter(e.target.value);
   };
 
@@ -165,17 +215,17 @@ const Dashboard = () => {
         </nav>
       </div>
 
-      {/* Separator Line */}
+      {/* Separador */}
       <div className="border-r border-gray-400 h-screen"></div>
 
-      {/* Main Content */}
+      {/* Conteúdo Principal */}
       <div className="w-3/4 p-8 relative flex-1">
         <div className="flex items-center justify-between mb-4">
           <Tooltip anchorSelect=".my-anchor-element1" place="top">
-            Hide Side Bar!
+            Ocultar Barra Lateral!
           </Tooltip>
           <Tooltip anchorSelect=".my-anchor-element2" place="top">
-            Show Side Bar!
+            Mostrar Barra Lateral!
           </Tooltip>
           <button
             onClick={toggleSidebar}
@@ -193,7 +243,7 @@ const Dashboard = () => {
               darkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'
             }`}
           >
-            Toggle Theme
+            Alternar Tema
           </button>
         </div>
         {selectedTab === 'overview' && (
@@ -202,20 +252,20 @@ const Dashboard = () => {
             <div className="mb-4 flex">
               <input
                 type="text"
-                placeholder="Search questionnaires..."
+                placeholder="Pesquisar questionários..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 className="flex-1 py-2 px-4 rounded-l border border-gray-400 text-black"
               />
               <select
                 value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
+                onChange={handleFilterChange}
                 className="py-2 px-4 border border-gray-400 rounded-r text-black"
               >
-                <option value="all">All Categories</option>
-                <option value="General">General</option>
-                <option value="Food">Food</option>
-                {/* Add more categories as needed */}
+                <option value="all">Todas as categorias</option>
+                <option value="General">Geral</option>
+                <option value="Food">Comida</option>
+                {/* Adicionar mais categorias conforme necessário */}
               </select>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -228,7 +278,7 @@ const Dashboard = () => {
                   <ul className="list-disc pl-4">
                     {questionnaire.questions.map((question) => (
                       <li key={question.id}>
-                        {question.question} (Correct answer: <span className="font-bold">{question.correctAnswer}</span>)
+                        {question.question} (Resposta correta: <span className="font-bold">{question.correctAnswer}</span>)
                       </li>
                     ))}
                   </ul>
@@ -238,15 +288,14 @@ const Dashboard = () => {
                       darkTheme ? 'bg-blue-500 text-white hover:bg-blue-400' : 'bg-blue-300 text-gray-800 hover:bg-blue-400'
                     }`}
                   >
-                    Edit Questionnaire
+                    Editar Questionário
                   </Link>
                 </div>
               ))}
             </div>
           </>
-        
         )}
-        
+
         {selectedTab === 'analytics' && (
           <>
             <h2 className="text-2xl font-bold mb-4">Analytics</h2>
@@ -254,23 +303,23 @@ const Dashboard = () => {
               <div className="flex mb-4">
                 <input
                   type="text"
-                  placeholder="Search questionnaires..."
+                  placeholder="Pesquisar questionários..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                   className="flex-1 py-2 px-4 rounded-l border border-gray-400"
                 />
                 <select
                   value={selectedFilter}
-                  onChange={(e) => setSelectedFilter(e.target.value)}
+                  onChange={handleFilterChange}
                   className="py-2 px-4 border border-gray-400 rounded-r"
                 >
-                  <option value="all">All Categories</option>
-                  <option value="General">General</option>
-                  <option value="Food">Food</option>
-                  {/* Add more categories as needed */}
+                  <option value="all">Todas as categorias</option>
+                  <option value="General">Geral</option>
+                  <option value="Food">Comida</option>
+                  {/* Adicionar mais categorias conforme necessário */}
                 </select>
               </div>
-              <h3 className="text-lg font-bold mb-2">Select a Questionnaire:</h3>
+              <h3 className="text-lg font-bold mb-2">Selecionar um Questionário:</h3>
               <ul>
                 {filteredQuestionnaires.map((questionnaire) => (
                   <li key={questionnaire.id} className="mb-2">
@@ -292,39 +341,40 @@ const Dashboard = () => {
               <>
                 <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
                 <div className={`flex border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
-                  <LineGraph data={prepareAnalyticsData(selectedQuestionnaire)} />
-                  <PieGraph data={prepareAnalyticsData(selectedQuestionnaire)} />
+                  <LineGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
+                  <PieGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
                 </div>
               </>
             ) : (
-              <p className="text-gray-600">Please select a questionnaire to view analytics.</p>
+              <p className="text-gray-600">Selecione um questionário para ver análises.</p>
             )}
           </>
         )}
+
         {selectedTab === 'responses' && (
           <>
-            <h2 className="text-2xl font-bold mb-4">Responses</h2>
+            <h2 className="text-2xl font-bold mb-4">Respostas</h2>
             <div className="mt-4">
               <div className="flex mb-4">
                 <input
                   type="text"
-                  placeholder="Search questionnaires..."
+                  placeholder="Pesquisar questionários..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={handleSearchChange}
                   className="flex-1 py-2 px-4 rounded-l border border-gray-400"
                 />
                 <select
                   value={selectedFilter}
-                  onChange={(e) => setSelectedFilter(e.target.value)}
+                  onChange={handleFilterChange}
                   className="py-2 px-4 border border-gray-400 rounded-r"
                 >
-                  <option value="all">All Categories</option>
-                  <option value="General">General</option>
-                  <option value="Food">Food</option>
-                  {/* Add more categories as needed */}
+                  <option value="all">Todas as categorias</option>
+                  <option value="General">Geral</option>
+                  <option value="Food">Comida</option>
+                  {/* Adicionar mais categorias conforme necessário */}
                 </select>
               </div>
-              <h3 className="text-lg font-bold mb-2">Select a Questionnaire:</h3>
+              <h3 className="text-lg font-bold mb-2">Selecionar um Questionário:</h3>
               <ul>
                 {filteredQuestionnaires.map((questionnaire) => (
                   <li key={questionnaire.id} className="mb-2">
@@ -346,35 +396,36 @@ const Dashboard = () => {
               {selectedQuestionnaire ? (
                 <>
                   <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                  <p className="text-gray-600">Here you can view the received responses for this questionnaire.</p>
+                  <p className="text-gray-600">Aqui você pode ver as respostas recebidas para este questionário.</p>
                   <div className="mt-4">
                     {selectedQuestionnaire.userResponses.map((response, index) => (
                       <div key={index} className="mb-4 p-4 border border-gray-400 rounded">
-                        <h4 className="font-bold">User {response.userId}</h4>
+                        <h4 className="font-bold">Usuário {response.userId}</h4>
                         <ul className="list-disc pl-4 mt-2">
                           {response.answers.map((answer, i) => (
                             <li key={i}>
-                              {selectedQuestionnaire.questions[i].question} - Your answer: {answer} {answer === selectedQuestionnaire.questions[i].correctAnswer ? '✔️' : '❌'} (Correct: {selectedQuestionnaire.questions[i].correctAnswer})
+                              {selectedQuestionnaire.questions[i].question} - Sua resposta: {answer} {answer === selectedQuestionnaire.questions[i].correctAnswer ? '✔️' : '❌'} (Correto: {selectedQuestionnaire.questions[i].correctAnswer})
                             </li>
                           ))}
                         </ul>
                         <p className="font-bold mt-2">
-                          Correct answers: {calculateCorrectAnswers(response.answers, selectedQuestionnaire.questions.map(q => q.correctAnswer))}
+                          Respostas corretas: {calculateCorrectAnswers(response.answers, selectedQuestionnaire.questions.map(q => q.correctAnswer))}
                         </p>
                       </div>
                     ))}
                   </div>
                 </>
               ) : (
-                <p className="text-gray-600">Select a questionnaire to view the responses.</p>
+                <p className="text-gray-600">Selecione um questionário para ver as respostas.</p>
               )}
             </div>
           </>
         )}
+
         {selectedTab === 'settings' && (
           <>
-            <h2 className="text-2xl font-bold mb-4">Settings</h2>
-            <p>Here are the settings...</p>
+            <h2 className="text-2xl font-bold mb-4">Configurações</h2>
+            <p>Aqui estão as configurações...</p>
           </>
         )}
       </div>
