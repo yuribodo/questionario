@@ -197,12 +197,12 @@ const Dashboard = () => {
                 placeholder="Search questionnaires..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 py-2 px-4 rounded-l border border-gray-400"
+                className="flex-1 py-2 px-4 rounded-l border border-gray-400 text-black"
               />
               <select
                 value={selectedFilter}
                 onChange={(e) => setSelectedFilter(e.target.value)}
-                className="py-2 px-4 border border-gray-400 rounded-r"
+                className="py-2 px-4 border border-gray-400 rounded-r text-black"
               >
                 <option value="all">All Categories</option>
                 <option value="General">General</option>
