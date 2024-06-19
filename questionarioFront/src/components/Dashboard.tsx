@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Tooltip } from 'react-tooltip';
 import LineGraph from './Graph/Line';
@@ -180,17 +181,17 @@ const Dashboard = () => {
           </button>
           <button
             onClick={toggleTheme}
-            className={`bg-gray-300 text-gray-700 px-3 py-1 rounded text-sm ${darkTheme ? 'hover:bg-gray-400' : 'hover:bg-gray-200'}`}
+            className={`py-2 px-4 rounded ${
+              darkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'
+            }`}
           >
-            {darkTheme ? 'Light Theme' : 'Dark Theme'}
+            Toggle Theme
           </button>
         </div>
-
-        {/* Content based on selectedTab */}
         {selectedTab === 'overview' && (
           <>
             <h2 className="text-2xl font-bold mb-4">Overview</h2>
-            <div className="flex mb-4">
+            <div className="mb-4 flex">
               <input
                 type="text"
                 placeholder="Search questionnaires..."
@@ -211,7 +212,10 @@ const Dashboard = () => {
             </div>
             <div className="grid grid-cols-2 gap-4">
               {filteredQuestionnaires.map((questionnaire) => (
-                <div key={questionnaire.id} className={`p-4 border border-gray-400 rounded ${darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'}`}>
+                <div
+                  key={questionnaire.id}
+                  className={`p-4 border border-gray-400 rounded ${darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'}`}
+                >
                   <h3 className="text-lg font-bold mb-2">{questionnaire.title}</h3>
                   <ul className="list-disc pl-4">
                     {questionnaire.questions.map((question) => (
@@ -220,6 +224,14 @@ const Dashboard = () => {
                       </li>
                     ))}
                   </ul>
+                  <Link
+                    to={`/dashboard/edit/${questionnaire.id}`}
+                    className={`mt-4 inline-block py-2 px-4 rounded ${
+                      darkTheme ? 'bg-blue-500 text-white hover:bg-blue-400' : 'bg-blue-300 text-gray-800 hover:bg-blue-400'
+                    }`}
+                  >
+                    Edit Questionnaire
+                  </Link>
                 </div>
               ))}
             </div>

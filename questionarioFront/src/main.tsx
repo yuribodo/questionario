@@ -13,6 +13,8 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import CreateQuestionario from './components/CreateQuestionario'
 import Dashboard from './components/Dashboard'
 import Sobre from './components/Sobre'
+import EditQuestionnaire from './components/EditQuestionnaire'
+
 
 
 
@@ -41,6 +43,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           <Route path='/createquestionario' element={<CreateQuestionario/>}/>
           <Route path='/dashboard' element={<Dashboard/>}/>
           <Route path='/sobre' element={<Sobre/>}/>
+          <Route path="dashboard/edit/:id" element={<EditQuestionnaire />} />
         </Routes>
       </ClerkProvider>
     </Router>
