@@ -1,18 +1,23 @@
 export const LineChartData = {
     // x
     labels: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
     ],
     datasets: [
         {
             label: "Steps",
-            data: [3000, 5000, 4500, 6000, 8000, 7000, 9000], // y
+            data: [30, 50, 45, 60, 80, 70, 90, 50, 60, 70, 75, 70], // y
             borderColor: "red"
         }
     ]
@@ -20,10 +25,10 @@ export const LineChartData = {
 }
 
 export const pieChartData = {
-    labels: ["Facebook", "Instagram", "Twitter", "Youtube", "LinkedIn"],
+    labels: ["React", "Typescript", "Vue", "Next", "Node"],
     datasets: [
         {
-            label: "Time Spent",
+            label: "Answers",
             data: [120, 60, 30, 90],
             backgroundColor: [
                 "rgba(255, 99, 132, 0.9)",
