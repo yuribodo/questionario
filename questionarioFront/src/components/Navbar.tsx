@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SignedOut, SignInButton, SignUpButton } from "@clerk/clerk-react";
+import { SignedOut, SignInButton, SignUpButton, UserButton, SignedIn, SignOutButton  } from "@clerk/clerk-react";
 import { motion } from 'framer-motion';
 
 
@@ -77,6 +77,13 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
               <SignUpButton />
             </div>
           </SignedOut>
+          <SignedIn>
+            <div className='flex text-white space-x-6'>
+              <SignOutButton/>
+              <UserButton/>
+            </div>
+            
+          </SignedIn>
           <div className='md:hidden flex items-center'>
             <button onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? (
