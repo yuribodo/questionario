@@ -11,7 +11,7 @@ interface LineGraphProps {
   data: GraphData;
 }
 
-const LineGraph: React.FC<LineGraphProps> = ({ data }) => {
+const LineGraph: React.FC<LineGraphProps> = () => {
   const options = {}; // Opções do gráfico (opcional)
 
   // Usar os dados de LineChartData conforme especificado

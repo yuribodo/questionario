@@ -11,7 +11,7 @@ interface PieGraphProps {
   data: GraphData;
 }
 
-const PieGraph: React.FC<PieGraphProps> = ({ data }) => {
+const PieGraph: React.FC<PieGraphProps> = () => {
   const options = {}; // Opções do gráfico (opcional)
 
   // Usar os dados de pieChartData conforme especificado

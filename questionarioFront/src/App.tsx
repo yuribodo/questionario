@@ -3,7 +3,7 @@ import QuestionarioThumb from './components/QuestionarioThumb';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { questionariosAtom } from './lib/atom';
-import Navbar from './components/Navbar';
+
 
 
 interface Question {
