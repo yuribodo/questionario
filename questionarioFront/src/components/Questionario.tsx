@@ -71,7 +71,11 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
   };
 
   if (!questionario) {
-    return <div>Carregando...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-red-500"></div>
+      </div>
+    );
   }
 
   const selectedAnswers = watch();
@@ -119,7 +123,7 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
 
       {isModalVisible && submittedAnswers && (
         <div className='fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center'>
-          <div className='bg-white p-4 rounded'>
+          <div className='bg-white p-8 rounded-lg shadow-lg text-black'>
             <h2 className='text-2xl font-bold mb-4'>Respostas enviadas com sucesso!</h2>
             {questionario.questions.map((question) => (
               <div key={question.id} className='mb-4'>
@@ -127,7 +131,9 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
                 <p><strong>Sua resposta: </strong>{submittedAnswers[question.id]}</p>
               </div>
             ))}
-            <button onClick={handleModalClose} className='bg-blue-500 p-2 rounded text-white'>Fechar</button>
+            <button onClick={handleModalClose} className='bg-blue-500 p-2 rounded text-white'>
+              Fechar
+            </button>
           </div>
         </div>
       )}
