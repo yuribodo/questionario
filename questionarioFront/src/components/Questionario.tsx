@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+const api = process.env.API_LINK
 
 interface Question {
   id: number;
@@ -36,7 +37,7 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
   useEffect(() => {
     const fetchQuestionario = async () => {
       try {
-        const response = await axios.get<Questionario>(`http://192.168.100.211:8080/questionarios/${questionarioIdNumber}`);
+        const response = await axios.get<Questionario>(`${api}/questionarios/${questionarioIdNumber}`);
         setQuestionario(response.data);
       } catch (error) {
         console.error('Error fetching questionario:', error);
@@ -47,7 +48,7 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const response = await axios.post(`http://192.168.100.211:8080/respostas/submit`, {
+      const response = await axios.post(`${api}/respostas/submit`, {
         usuarioId: '1',
         questionarioId: questionarioIdNumber.toString(),
         respostas: Object.keys(data).map((key) => ({

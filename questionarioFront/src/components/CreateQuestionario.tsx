@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { SignedIn, SignInButton, SignUpButton, SignedOut } from '@clerk/clerk-react';
+const api = process.env.API_LINK
 
 interface Question {
   type: 'OBJETIVA' | 'DISCURSIVA';
@@ -66,7 +67,7 @@ const CreateQuestionario = () => {
 
   const onSubmit = async (data: any) => {
     try {
-      const response = await axios.post('http://192.168.100.211:8080/questionarios/with-questions', {
+      const response = await axios.post(`${api}/questionarios/with-questions`, {
         title: data.title,
         description: data.description,
         questions: questions,

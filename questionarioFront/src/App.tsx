@@ -3,7 +3,7 @@ import QuestionarioThumb from './components/QuestionarioThumb';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { questionariosAtom } from './lib/atom';
-
+const api = process.env.API_LINK
 
 
 interface Question {
@@ -32,8 +32,9 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get<Questionario[]>('http://192.168.100.211:8080/questionarios');
+      const response = await axios.get<Questionario[]>(`${api}/questionarios`);
       setQuestionariosBack(response.data);
+      
     } catch (error) {
       console.error('Error fetching questionarios:', error);
     }
