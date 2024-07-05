@@ -1,9 +1,12 @@
 import { useState, ChangeEvent } from 'react';
-import { Link } from 'react-router-dom';
+import {  UserProfile } from '@clerk/clerk-react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Tooltip } from 'react-tooltip';
 import LineGraph from './Graph/Line';
 import PieGraph from './Graph/Pie';
+import { Switch } from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
 
 interface Question {
   id: number;
@@ -41,8 +44,6 @@ export interface GraphData {
   labels: string[];
 }
 
-
-
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
@@ -50,6 +51,10 @@ const Dashboard = () => {
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
+
+  
+
+  const themeLabel = darkTheme ? '🌙' : '☀️';
 
   const [questionnaires] = useState<Questionnaire[]>([
     {
@@ -107,11 +112,15 @@ const Dashboard = () => {
     setSelectedQuestionnaire(questionnaire);
   };
 
-  const calculateCorrectAnswers = (userAnswers: string[], correctAnswers: string[]) => {
+  
+  {/*
+    const calculateCorrectAnswers = (userAnswers: string[], correctAnswers: string[]) => {
     return userAnswers.reduce((count, answer, index) => {
       return count + (answer === correctAnswers[index] ? 1 : 0);
     }, 0);
   };
+    
+    */}
 
   const prepareAnalyticsData = (questionnaire: Questionnaire): { data: GraphData } => {
     const data: AnalyticsData[] = [];
@@ -229,203 +238,152 @@ const Dashboard = () => {
           </Tooltip>
           <button
             onClick={toggleSidebar}
-            className={`text-gray-700 px-4 py-2 rounded mr-4 ${darkTheme ? 'hover:bg-gray-400' : 'hover:bg-gray-200'}`}
+            className={`text-gray-700 px-4 py-2 rounded mr-4 ${darkTheme ? 'hover:bg-gray-700' : 'hover:bg-gray-300'} ${
+              sidebarOpen ? 'my-anchor-element1' : 'my-anchor-element2'
+            }`}
           >
-            {sidebarOpen ? (
-              <FiChevronLeft className="text-xl my-anchor-element1" />
-            ) : (
-              <FiChevronRight className="text-xl my-anchor-element2" />
-            )}
+            {sidebarOpen ? <FiChevronLeft size={24} /> : <FiChevronRight size={24} />}
           </button>
           <button
             onClick={toggleTheme}
-            className={`py-2 px-4 rounded ${
-              darkTheme ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-gray-300 text-gray-800 hover:bg-gray-400'
-            }`}
+            className={`text-gray-700 px-4 py-2 rounded ${darkTheme ? 'hover:bg-gray-700' : 'hover:bg-gray-300'}`}
           >
             Alternar Tema
           </button>
         </div>
+
         {selectedTab === 'overview' && (
-          <>
+          <div>
             <h2 className="text-2xl font-bold mb-4">Overview</h2>
-            <div className="mb-4 flex">
-              <input
-                type="text"
-                placeholder="Pesquisar questionários..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="flex-1 py-2 px-4 rounded-l border border-gray-400 text-black"
-              />
-              <select
-                value={selectedFilter}
-                onChange={handleFilterChange}
-                className="py-2 px-4 border border-gray-400 rounded-r text-black"
-              >
-                <option value="all">Todas as categorias</option>
-                <option value="General">Geral</option>
-                <option value="Food">Comida</option>
-                {/* Adicionar mais categorias conforme necessário */}
-              </select>
-            </div>
             <div className="grid grid-cols-2 gap-4">
-              {filteredQuestionnaires.map((questionnaire) => (
+              {questionnaires.map((questionnaire) => (
                 <div
                   key={questionnaire.id}
-                  className={`p-4 border border-gray-400 rounded ${darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-800'}`}
+                  className="p-4 border border-gray-400 rounded cursor-pointer"
+                  onClick={() => handleQuestionnaireSelect(questionnaire)}
                 >
-                  <h3 className="text-lg font-bold mb-2">{questionnaire.title}</h3>
-                  <ul className="list-disc pl-4">
-                    {questionnaire.questions.map((question) => (
-                      <li key={question.id}>
-                        {question.question} (Resposta correta: <span className="font-bold">{question.correctAnswer}</span>)
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to={`/dashboard/edit/${questionnaire.id}`}
-                    className={`mt-4 inline-block py-2 px-4 rounded ${
-                      darkTheme ? 'bg-blue-500 text-white hover:bg-blue-400' : 'bg-blue-300 text-gray-800 hover:bg-blue-400'
-                    }`}
-                  >
-                    Editar Questionário
-                  </Link>
+                  <h3 className="text-xl font-bold">{questionnaire.title}</h3>
+                  <p className="text-gray-500">{questionnaire.category}</p>
+                  <p>{questionnaire.questions.length} perguntas</p>
+                  <p>{questionnaire.userResponses.length} respostas</p>
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
 
         {selectedTab === 'analytics' && (
-          <>
+          <div>
             <h2 className="text-2xl font-bold mb-4">Analytics</h2>
-            <div className="mt-4">
-              <div className="flex mb-4">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Questionnaires</h3>
+              <div className="flex items-center mb-4">
                 <input
                   type="text"
-                  placeholder="Pesquisar questionários..."
+                  placeholder="Search..."
+                  className={`px-4 py-2 border rounded ${
+                    darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-900'
+                  }`}
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="flex-1 py-2 px-4 rounded-l border border-gray-400"
                 />
                 <select
                   value={selectedFilter}
                   onChange={handleFilterChange}
-                  className="py-2 px-4 border border-gray-400 rounded-r"
+                  className={`ml-2 px-4 py-2 border rounded ${
+                    darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-200 text-gray-900'
+                  }`}
                 >
-                  <option value="all">Todas as categorias</option>
-                  <option value="General">Geral</option>
-                  <option value="Food">Comida</option>
-                  {/* Adicionar mais categorias conforme necessário */}
+                  <option value="all">All</option>
+                  <option value="General">General</option>
+                  <option value="Food">Food</option>
+                  {/* Adicione mais opções de filtro conforme necessário */}
                 </select>
               </div>
-              <h3 className="text-lg font-bold mb-2">Selecionar um Questionário:</h3>
-              <ul>
+              <div className="grid grid-cols-2 gap-4">
                 {filteredQuestionnaires.map((questionnaire) => (
-                  <li key={questionnaire.id} className="mb-2">
-                    <button
-                      onClick={() => handleQuestionnaireSelect(questionnaire)}
-                      className={`w-full py-2 px-4 rounded ${
-                        selectedQuestionnaire === questionnaire
-                          ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
-                          : 'hover:bg-gray-700'
-                      }`}
-                    >
-                      {questionnaire.title}
-                    </button>
-                  </li>
+                  <div
+                    key={questionnaire.id}
+                    className={`p-4 border rounded cursor-pointer ${
+                      darkTheme ? 'border-gray-700' : 'border-gray-400'
+                    }`}
+                    onClick={() => handleQuestionnaireSelect(questionnaire)}
+                  >
+                    <h4 className="text-lg font-bold">{questionnaire.title}</h4>
+                    <p className="text-gray-500">{questionnaire.category}</p>
+                  </div>
                 ))}
-              </ul>
-            </div>
-            {selectedQuestionnaire && (
-                <>
-                  <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                  <div className={`flex border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
+              </div>
+              {selectedQuestionnaire && (
+                <div className="mt-4">
+                  <h3 className="text-xl font-bold mb-2">Analytics for {selectedQuestionnaire.title}</h3>
+                  {/* Gráfico de Respostas */}
+                  <div className="mb-4">
+                    <h4 className="text-lg font-bold mb-2">Responses Over Time</h4>
                     <LineGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
+                  </div>
+                  {/* Gráfico de Respostas Corretas */}
+                  <div className="mb-4">
+                    <h4 className="text-lg font-bold mb-2">Correct Answers</h4>
                     <PieGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
                   </div>
-                </>
+                </div>
               )}
-          </>
+            </div>
+          </div>
         )}
 
         {selectedTab === 'responses' && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">Respostas</h2>
-            <div className="mt-4">
-              <div className="flex mb-4">
-                <input
-                  type="text"
-                  placeholder="Pesquisar questionários..."
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  className="flex-1 py-2 px-4 rounded-l border border-gray-400"
-                />
-                <select
-                  value={selectedFilter}
-                  onChange={handleFilterChange}
-                  className="py-2 px-4 border border-gray-400 rounded-r"
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Responses</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {questionnaires.map((questionnaire) => (
+                <div
+                  key={questionnaire.id}
+                  className={`p-4 border rounded cursor-pointer ${
+                    darkTheme ? 'border-gray-700' : 'border-gray-400'
+                  }`}
+                  onClick={() => handleQuestionnaireSelect(questionnaire)}
                 >
-                  <option value="all">Todas as categorias</option>
-                  <option value="General">Geral</option>
-                  <option value="Food">Comida</option>
-                  {/* Adicionar mais categorias conforme necessário */}
-                </select>
-              </div>
-              <h3 className="text-lg font-bold mb-2">Selecionar um Questionário:</h3>
-              <ul>
-                {filteredQuestionnaires.map((questionnaire) => (
-                  <li key={questionnaire.id} className="mb-2">
-                    <button
-                      onClick={() => handleQuestionnaireSelect(questionnaire)}
-                      className={`w-full py-2 px-4 rounded ${
-                        selectedQuestionnaire === questionnaire
-                          ? darkTheme ? 'bg-gray-700 text-white' : 'bg-gray-300 text-gray-800'
-                          : 'hover:bg-gray-700'
-                      }`}
-                    >
-                      {questionnaire.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+                  <h3 className="text-xl font-bold">{questionnaire.title}</h3>
+                  <p className="text-gray-500">{questionnaire.category}</p>
+                  <p>{questionnaire.questions.length} perguntas</p>
+                  <p>{questionnaire.userResponses.length} respostas</p>
+                </div>
+              ))}
             </div>
-            <div className={`border border-gray-300 p-4 rounded shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
-              {selectedQuestionnaire ? (
-                <>
-                  <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                  <p className="text-gray-600">Aqui você pode ver as respostas recebidas para este questionário.</p>
-                  <div className="mt-4">
-                    {selectedQuestionnaire.userResponses.map((response, index) => (
-                      <div key={index} className="mb-4 p-4 border border-gray-400 rounded">
-                        <h4 className="font-bold">Usuário {response.userId}</h4>
-                        <ul className="list-disc pl-4 mt-2">
-                          {response.answers.map((answer, i) => (
-                            <li key={i}>
-                              {selectedQuestionnaire.questions[i].question} - Sua resposta: {answer} {answer === selectedQuestionnaire.questions[i].correctAnswer ? '✔️' : '❌'} (Correto: {selectedQuestionnaire.questions[i].correctAnswer})
-                            </li>
-                          ))}
-                        </ul>
-                        <p className="font-bold mt-2">
-                          Respostas corretas: {calculateCorrectAnswers(response.answers, selectedQuestionnaire.questions.map(q => q.correctAnswer))}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <p className="text-gray-600">Selecione um questionário para ver as respostas.</p>
-              )}
-            </div>
-          </>
+          </div>
         )}
 
         {selectedTab === 'settings' && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">Configurações</h2>
-            <p>Aqui estão as configurações...</p>
-          </>
-        )}
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Settings</h2>
+
+          {/* Toggle Theme */}
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-xl font-bold">Theme</h3>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={darkTheme}
+                  onChange={toggleTheme}
+                  name="themeSwitch"
+                  color="primary"
+                />
+              }
+              label={themeLabel} 
+            />
+          </div>
+
+          {/* User Profile */}
+          <div className="mb-4">
+            <h3 className="text-2xl font-bold">Profile</h3>
+            <div className="flex justify-center">
+              <UserProfile />
+            </div>
+          </div>
+        </div>
+      )}
       </div>
     </div>
   );
