@@ -337,17 +337,15 @@ const Dashboard = () => {
                 ))}
               </ul>
             </div>
-            {selectedQuestionnaire ? (
-              <>
-                <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
-                <div className={`flex border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
-                  <LineGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
-                  <PieGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-600">Selecione um questionário para ver análises.</p>
-            )}
+            {selectedQuestionnaire && (
+                <>
+                  <h3 className="text-lg font-bold mb-2">{selectedQuestionnaire.title}</h3>
+                  <div className={`flex border border-gray-300 p-4 rounded h-[40vh] shadow-md ${darkTheme ? 'bg-white text-gray-800' : 'bg-gray-100 text-gray-700'}`}>
+                    <LineGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
+                    <PieGraph data={prepareAnalyticsData(selectedQuestionnaire).data} />
+                  </div>
+                </>
+              )}
           </>
         )}
 
