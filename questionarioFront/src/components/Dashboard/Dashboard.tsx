@@ -108,7 +108,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className={`flex  ${darkTheme ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+    <div className={`flex h-screen ${darkTheme ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
       {sidebarOpen && (
         <aside className={`w-64 bg-gray-200 ${darkTheme ? 'text-white bg-gray-800' : 'text-gray-800'}`}>
           <nav className="p-4">
