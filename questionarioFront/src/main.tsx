@@ -11,7 +11,7 @@ import Questionario from './components/Questionario'
 import { useParams } from 'react-router-dom'; // Importe o hook useParams
 import { ClerkProvider } from '@clerk/clerk-react'
 import CreateQuestionario from './components/CreateQuestionario'
-import Dashboard from './components/Dashboard'
+import Dashboard from './components/Dashboard/Dashboard'
 import Sobre from './components/Sobre'
 import EditQuestionnaire from './components/EditQuestionnaire'
 import Navbar from './components/Navbar'

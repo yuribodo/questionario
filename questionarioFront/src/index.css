@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.dark-theme {
+    --background-color: #1a202c;
+    --text-color: #ffffff;
+  }
+  
+  /* Light Theme */
+  .light-theme {
+    --background-color: #ffffff;
+    --text-color: #1a202c;
+  }
+  
+  /* Aplicar ao elemento raiz */
+  body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+h1, p {
+    color: var(--text-color);
+    transition: color 0.3s ease;
+  }
