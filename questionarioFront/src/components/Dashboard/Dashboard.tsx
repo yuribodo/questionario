@@ -3,7 +3,6 @@ import Overview from './Overview';
 import Analytics from './Analytics';
 import Responses from './Responses';
 import Settings from './Settings';
-import { Tooltip } from 'react-tooltip';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 export interface Question {
@@ -159,20 +158,11 @@ const Dashboard: React.FC = () => {
         </aside>
       )}
       <main className="flex-1 p-4">
-        <header className="flex items-center justify-between mb-4">
+        <header className="flex items-center  mb-4">
+          <button onClick={toggleSidebar} className="p-2 rounded hover:bg-gray-300">
+            {sidebarOpen ? <FiChevronLeft /> : <FiChevronRight />}
+          </button>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex items-center space-x-4">
-            <Tooltip content="Toggle Sidebar">
-              <button onClick={toggleSidebar} className="p-2 rounded hover:bg-gray-300">
-                {sidebarOpen ? <FiChevronLeft /> : <FiChevronRight />}
-              </button>
-            </Tooltip>
-            <Tooltip content="Toggle Theme">
-              <button onClick={toggleTheme} className="p-2 rounded hover:bg-gray-300">
-                {darkTheme ? 'Light Mode' : 'Dark Mode'}
-              </button>
-            </Tooltip>
-          </div>
         </header>
         {selectedTab === 'overview' && (
           <Overview
