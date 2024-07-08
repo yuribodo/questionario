@@ -11,7 +11,7 @@ interface SettingsProps {
 
 const Settings: React.FC<SettingsProps> = ({ darkTheme, toggleTheme, themeLabel }) => {
   return (
-    <div>
+    <div className=''>
       <h2 className="text-2xl font-bold mb-4">Settings</h2>
 
       {/* Toggle Theme */}

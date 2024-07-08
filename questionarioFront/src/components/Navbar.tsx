@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SignedOut, SignInButton, SignUpButton, UserButton, SignedIn, SignOutButton  } from "@clerk/clerk-react";
 import { motion } from 'framer-motion';
-
+import { useMediaQuery } from 'react-responsive';
 
 interface NavbarProps {
   onSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -10,10 +10,11 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
   return (
     <motion.div 
-      className='h-[10vh] w-full bg-gray-800 shadow-lg  top-0 left-0 z-10'
+      className='h-[10vh] w-full bg-gray-800 shadow-lg top-0 left-0 z-10'
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -33,21 +34,21 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
           />
           <div className='hidden md:flex space-x-6'>
             <Link to="/" className='hover:text-blue-500 transition-colors'>
-                <motion.button 
-                  type="button"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  Inicio
-                </motion.button>
-              </Link>
+              <motion.button 
+                type="button"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                Início
+              </motion.button>
+            </Link>
             <Link to="/createquestionario" className='hover:text-blue-500 transition-colors'>
               <motion.button 
                 type="button"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                Criar questionario
+                Criar questionário
               </motion.button>
             </Link>
             <Link to="/dashboard" className='hover:text-blue-500 transition-colors'>
@@ -78,11 +79,15 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
             </div>
           </SignedOut>
           <SignedIn>
-            <div className='flex text-white space-x-6'>
-              <SignOutButton/>
-              <UserButton/>
+            <div className='flex mr-2 text-white space-x-6'>
+              { !isMobile && (
+                <>
+                  <SignOutButton/>
+                 
+                </>
+              )}
+               <UserButton/>
             </div>
-            
           </SignedIn>
           <div className='md:hidden flex items-center'>
             <button onClick={() => setMenuOpen(!menuOpen)}>
@@ -106,8 +111,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         >
+          <Link to="/" className='block px-4 py-2 hover:text-blue-500 transition-colors'>
+            Início
+          </Link>
           <Link to="/createquestionario" className='block px-4 py-2 hover:text-blue-500 transition-colors'>
-            Criar questionairo
+            Criar questionário
           </Link>
           <Link to="/dashboard" className='block px-4 py-2 hover:text-blue-500 transition-colors'>
             Dashboard
