@@ -53,7 +53,7 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
-
+  console.log(respostas)
   useEffect(() => {
     axios.get('https://questionario-sx95.onrender.com/questionarios')
       .then(response => {
@@ -70,6 +70,7 @@ const Dashboard: React.FC = () => {
         .then(response => {
           setRespostas(response.data);
         })
+        
         .catch(error => {
           console.error('Erro ao buscar respostas da API:', error);
         });
@@ -105,7 +106,9 @@ const Dashboard: React.FC = () => {
     setSelectedQuestionnaire(questionnaire);
   };
 
-  const prepareAnalyticsData = (respostas: Resposta[]): { data: GraphData } => {
+  
+
+  /*const prepareAnalyticsData = (respostas: Resposta[]): { data: GraphData } => {
     const labels = respostas.map(resposta => resposta.question.question);
     const data = respostas.map(resposta => respostas.filter(r => r.resposta === resposta.resposta).length);
 
@@ -123,7 +126,7 @@ const Dashboard: React.FC = () => {
         ],
       },
     };
-  };
+  }; */
 
   return (
     <div className={`flex h-screen ${darkTheme ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
@@ -193,16 +196,16 @@ const Dashboard: React.FC = () => {
             toggleSidebar={toggleSidebar}
           />
         )}
-        {selectedTab === 'analytics' && selectedQuestionnaire && (
+        {selectedTab === 'analytics' && (
           <Analytics
-            respostas={respostas}
+            
             searchQuery={searchQuery}
             selectedFilter={selectedFilter}
             handleSearchChange={handleSearchChange}
             handleFilterChange={handleFilterChange}
-            selectedQuestionnaire={selectedQuestionnaire}
-            handleQuestionnaireSelect={handleQuestionnaireSelect}
-            prepareAnalyticsData={prepareAnalyticsData}
+            
+            
+      
           />
         )}
         {selectedTab === 'responses' && (
