@@ -14,7 +14,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
 
   return (
     <motion.div 
-      className='h-[10vh] w-full bg-gray-800 shadow-lg top-0 left-0 z-10'
+      className='h-[10vh] w-full bg-gray-800  shadow-lg top-0 left-0 z-10'
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
