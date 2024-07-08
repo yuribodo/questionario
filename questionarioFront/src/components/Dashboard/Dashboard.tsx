@@ -77,14 +77,6 @@ const Dashboard: React.FC = () => {
     }
   }, [selectedQuestionnaire]);
 
-  useEffect(() => {
-    // Simulação de busca inicial de questionários
-    const mockQuestionnaires: Questionnaire[] = [
-      { id: 1, title: 'Questionário 1', description: 'Descrição do Questionário 1', questions: [] },
-      { id: 2, title: 'Questionário 2', description: 'Descrição do Questionário 2', questions: [] },
-    ];
-    setQuestionnaires(mockQuestionnaires);
-  }, []);
 
   const toggleTheme = () => {
     setDarkTheme(prevTheme => !prevTheme);
