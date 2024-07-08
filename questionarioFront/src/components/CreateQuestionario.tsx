@@ -16,6 +16,8 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { SignedIn, SignInButton, SignUpButton, SignedOut } from '@clerk/clerk-react';
 const api = process.env.API_LINK
+import { useAtom } from 'jotai';
+import { darkThemeAtom } from '../lib/atom';
 
 interface Question {
   type: 'OBJETIVA' | 'DISCURSIVA';
@@ -32,6 +34,7 @@ const CreateQuestionario = () => {
       questions: [{ type: 'OBJETIVA', question: '', choices: [], correctChoice: '' }],
     },
   });
+  const [darkTheme] = useAtom(darkThemeAtom);
 
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([
@@ -92,7 +95,7 @@ const CreateQuestionario = () => {
   };
 
   return (
-    <div className="bg-gray-800 gray p-8">
+    <div className={`gray p-8 ${darkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}` }>
       <SignedIn>
         <Container component="main" maxWidth="md">
           <Paper elevation={3} style={{ padding: '2rem', backgroundColor: '#1e293b', color: 'white' }}>

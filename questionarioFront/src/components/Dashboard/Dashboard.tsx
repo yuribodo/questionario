@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAtom } from 'jotai';
+import { darkThemeAtom } from '../../lib/atom';
 import Overview from './Overview';
 import Analytics from './Analytics';
 import Responses from './Responses';
@@ -31,7 +33,7 @@ export interface GraphData {
 }
 
 const Dashboard: React.FC = () => {
-  const [darkTheme, setDarkTheme] = useState(true);
+  const [darkTheme, setDarkTheme] = useAtom(darkThemeAtom);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedTab, setSelectedTab] = useState('overview');
   const [questionnaires] = useState<Questionnaire[]>([

@@ -25,3 +25,4 @@ export const formAnswer = atom<FormData>({});
 export const questionariosAtom = atom<Questionario[]>([]);
 
 
+export const darkThemeAtom = atom(true);
