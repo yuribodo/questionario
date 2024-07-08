@@ -15,6 +15,7 @@ import Dashboard from './components/Dashboard/Dashboard'
 import Sobre from './components/Sobre'
 import EditQuestionnaire from './components/EditQuestionnaire'
 import Navbar from './components/Navbar'
+import QuestionnaireResponses from './components/QuestionnaireResponses'
 
 
 
@@ -47,6 +48,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
             <Route path='/dashboard' element={<Dashboard/>}/>
             <Route path='/sobre' element={<Sobre/>}/>
             <Route path="dashboard/edit/:id" element={<EditQuestionnaire />} />
+            <Route path="/responses/:questionnaireId" element={<QuestionnaireResponses/>} />
           </Routes>
       </ClerkProvider>
     </Router>
