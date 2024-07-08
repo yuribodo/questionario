@@ -1,19 +1,5 @@
 import React from 'react';
-
-// Componentes de gráfico (exemplos de placeholders)
-const LineGraph: React.FC<{ className?: string }> = ({ className }) => (
-  <div className={`bg-white border border-gray-300 rounded-lg p-4 ${className}`}>
-    {/* Placeholder para gráfico de linha */}
-    <p className="text-center text-gray-500">Gráfico de Linha Placeholder</p>
-  </div>
-);
-
-const PieGraph: React.FC<{ className?: string }> = ({ className }) => (
-  <div className={`bg-white border border-gray-300 rounded-lg p-4 ${className}`}>
-    {/* Placeholder para gráfico de pizza */}
-    <p className="text-center text-gray-500">Gráfico de Pizza Placeholder</p>
-  </div>
-);
+import ReactApexChart from 'react-apexcharts';
 
 interface AnalyticsProps {
   searchQuery: string;
@@ -28,8 +14,34 @@ const Analytics: React.FC<AnalyticsProps> = ({
   handleSearchChange,
   handleFilterChange,
 }) => {
+  // Dados de exemplo para o gráfico de linha
+  const lineSeries = [{
+    name: 'Series 1',
+    data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
+  }];
+
+  const lineOptions = {
+    chart: {
+      type: 'line' as const,
+    },
+    series: lineSeries,
+    xaxis: {
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+    },
+  };
+
+  // Dados de exemplo para o gráfico de pizza
+  const pieSeries = [44, 55, 13, 43, 22];
+
+  const pieOptions = {
+    chart: {
+      type: 'donut' as const,
+    },
+    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+  };
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md text-black">
+    <div className="p-4 min-h-screen bg-white rounded-lg shadow-md text-black">
       <h2 className="text-2xl font-bold mb-4">Analytics</h2>
       <div className="mb-4 flex items-center">
         <input
@@ -51,13 +63,17 @@ const Analytics: React.FC<AnalyticsProps> = ({
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-gray-100 rounded-lg p-4">
+        <div className=" rounded-lg p-4">
           <h3 className="text-lg font-bold mb-2">Gráfico de Linha</h3>
-          <LineGraph className="w-full h-64" />
+          <div className="w-full h-64">
+            <ReactApexChart options={lineOptions} series={lineSeries} type="line" />
+          </div>
         </div>
-        <div className="bg-gray-100 rounded-lg p-4">
+        <div className=" rounded-lg p-4">
           <h3 className="text-lg font-bold mb-2">Gráfico de Pizza</h3>
-          <PieGraph className="w-full h-64" />
+          <div className="w-full h-64">
+            <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
+          </div>
         </div>
       </div>
     </div>
