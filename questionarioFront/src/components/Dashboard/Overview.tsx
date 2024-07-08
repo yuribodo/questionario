@@ -29,18 +29,18 @@ const Overview: React.FC<OverviewProps> = ({
   return (
     <>
       <h2 className="text-2xl font-bold mb-4">Overview</h2>
-      <div className="mb-4 flex">
+      <div className="mb-4 flex flex-col sm:flex-row">
         <input
           type="text"
           placeholder="Pesquisar questionários..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="flex-1 py-2 px-4 rounded-l border border-gray-400 text-black"
+          className="flex-1 py-2 px-4 rounded-l mb-2 sm:mb-0 sm:mr-2 border border-gray-400 text-black"
         />
         <select
           value={selectedFilter}
           onChange={handleFilterChange}
-          className="py-2 px-4 border border-gray-400 rounded-r text-black"
+          className="py-2 px-4 rounded-r mb-2 sm:mb-0 border border-gray-400 text-black"
         >
           <option value="all">Todas as categorias</option>
           <option value="General">Geral</option>
@@ -48,7 +48,7 @@ const Overview: React.FC<OverviewProps> = ({
           {/* Adicionar mais categorias conforme necessário */}
         </select>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {filteredQuestionnaires.map((questionnaire) => (
           <div
             key={questionnaire.id}
