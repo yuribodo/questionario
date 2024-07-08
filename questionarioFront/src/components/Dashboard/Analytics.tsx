@@ -42,7 +42,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
             placeholder="Pesquisar questionários..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="flex-1 py-2 px-4 rounded-l border border-gray-400"
+            className="flex-1 py-2 px-4 rounded-l border border-gray-400 text-black"
           />
           <select
             value={selectedFilter}

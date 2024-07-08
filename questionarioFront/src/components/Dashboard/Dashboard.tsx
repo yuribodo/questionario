@@ -31,7 +31,7 @@ export interface GraphData {
 }
 
 const Dashboard: React.FC = () => {
-  const [darkTheme, setDarkTheme] = useState(false);
+  const [darkTheme, setDarkTheme] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedTab, setSelectedTab] = useState('overview');
   const [questionnaires] = useState<Questionnaire[]>([
