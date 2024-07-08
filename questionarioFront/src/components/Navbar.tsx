@@ -12,6 +12,22 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
+
+  const line1Variants = {
+    open: { rotate: 45, y: 10 },
+    closed: { rotate: 0, y: 0 },
+  };
+
+  const line2Variants = {
+    open: { opacity: 0 },
+    closed: { opacity: 1 },
+  };
+
+  const line3Variants = {
+    open: { rotate: -45, y: -6 },
+    closed: { rotate: 0, y: 0 },
+  };
+
   return (
     <motion.div 
       className='h-[10vh] w-full bg-gray-800  shadow-lg top-0 left-0 z-10'
@@ -91,15 +107,26 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
           </SignedIn>
           <div className='md:hidden flex items-center'>
             <button onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-              )}
+            <motion.div className="relative w-6 h-6">
+              <motion.div 
+                className="absolute w-full h-0.5 bg-white"
+                variants={line1Variants}
+                initial="closed"
+                animate={menuOpen ? "open" : "closed"}
+              />
+              <motion.div 
+                className="absolute w-full h-0.5 bg-white mt-2"
+                variants={line2Variants}
+                initial="closed"
+                animate={menuOpen ? "open" : "closed"}
+              />
+              <motion.div 
+                className="absolute w-full h-0.5 bg-white mt-4"
+                variants={line3Variants}
+                initial="closed"
+                animate={menuOpen ? "open" : "closed"}
+              />
+            </motion.div>
             </button>
           </div>
         </div>
