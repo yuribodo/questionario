@@ -1,17 +1,14 @@
 import React from 'react';
 import { Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { GraphData } from '../Dashboard';
 
-// Registrando os componentes necessários
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-interface PieGraphProps {
+export interface PieGraphProps {
   data: GraphData;
+  className?: string; // Adicionando className opcional
 }
 
-const PieGraph: React.FC<PieGraphProps> = ({ data }) => {
-  return <Pie data={data} />;
+const PieGraph: React.FC<PieGraphProps> = ({ data, className }) => {
+  return <Pie data={data} className={className} />;
 };
 
 export default PieGraph;

@@ -21,9 +21,8 @@ const Responses: React.FC<ResponsesProps> = ({ questionnaires, handleQuestionnai
             onClick={() => handleQuestionnaireSelect(questionnaire)}
           >
             <h3 className="text-xl font-bold">{questionnaire.title}</h3>
-            <p className="text-gray-500">{questionnaire.category}</p>
             <p>{questionnaire.questions.length} perguntas</p>
-            <p>{questionnaire.userResponses.length} respostas</p>
+            
           </div>
         ))}
       </div>

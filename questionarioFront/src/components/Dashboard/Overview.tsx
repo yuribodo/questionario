@@ -22,7 +22,7 @@ const Overview: React.FC<OverviewProps> = ({
 }) => {
   const filteredQuestionnaires = questionnaires.filter(
     (questionnaire) =>
-      (selectedFilter === 'all' || questionnaire.category === selectedFilter) &&
+      (selectedFilter === 'all' || questionnaire.description === selectedFilter) &&
       questionnaire.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -58,7 +58,7 @@ const Overview: React.FC<OverviewProps> = ({
             <ul className="list-disc pl-4">
               {questionnaire.questions.map((question) => (
                 <li key={question.id}>
-                  {question.question} (Resposta correta: <span className="font-bold">{question.correctAnswer}</span>)
+                  {question.question} (Resposta correta: <span className="font-bold">{question.correctChoice}</span>)
                 </li>
               ))}
             </ul>

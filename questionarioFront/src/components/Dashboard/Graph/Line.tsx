@@ -1,17 +1,14 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale } from 'chart.js';
 import { GraphData } from '../Dashboard';
 
-// Registrando os componentes necessários
-ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Legend, CategoryScale);
-
-interface LineGraphProps {
+export interface LineGraphProps {
   data: GraphData;
+  className?: string; // Adicionando className opcional
 }
 
-const LineGraph: React.FC<LineGraphProps> = ({ data }) => {
-  return <Line data={data} />;
+const LineGraph: React.FC<LineGraphProps> = ({ data, className }) => {
+  return <Line data={data} className={className} />;
 };
 
 export default LineGraph;

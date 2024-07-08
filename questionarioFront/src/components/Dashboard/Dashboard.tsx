@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useAtom } from 'jotai';
 import { darkThemeAtom } from '../../lib/atom';
 import Overview from './Overview';
@@ -9,16 +10,27 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 export interface Question {
   id: number;
+  type: string;
   question: string;
-  correctAnswer: string;
+  choices: string[];
+  correctChoice: string | null;
+  questionarioId: number;
 }
 
 export interface Questionnaire {
   id: number;
   title: string;
-  category: string;
+  description: string;
   questions: Question[];
-  userResponses: string[];
+}
+
+export interface Resposta {
+  id: number;
+  usuarioId: number;
+  questionarioId: number;
+  questionId: number;
+  resposta: string;
+  question: Question;
 }
 
 export interface GraphData {
@@ -36,39 +48,49 @@ const Dashboard: React.FC = () => {
   const [darkTheme, setDarkTheme] = useAtom(darkThemeAtom);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedTab, setSelectedTab] = useState('overview');
-  const [questionnaires] = useState<Questionnaire[]>([
-    {
-      id: 1,
-      title: 'Questionário 1',
-      category: 'Geral',
-      questions: [
-        { id: 1, question: 'Pergunta 1?', correctAnswer: 'Resposta A' },
-        { id: 2, question: 'Pergunta 2?', correctAnswer: 'Resposta B' },
-      ],
-      userResponses: ['Resposta A', 'Resposta B'],
-    },
-    {
-      id: 2,
-      title: 'Questionário 2',
-      category: 'Comida',
-      questions: [
-        { id: 1, question: 'Pergunta 1?', correctAnswer: 'Resposta A' },
-        { id: 2, question: 'Pergunta 2?', correctAnswer: 'Resposta B' },
-      ],
-      userResponses: ['Resposta A', 'Resposta B'],
-    },
-    // Adicionar mais questionários conforme necessário
-  ]);
+  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>([]);
+  const [respostas, setRespostas] = useState<Resposta[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
 
+  useEffect(() => {
+    axios.get('https://questionario-sx95.onrender.com/questionarios')
+      .then(response => {
+        setQuestionnaires(response.data);
+      })
+      .catch(error => {
+        console.error('Erro ao buscar dados da API:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (selectedQuestionnaire) {
+      axios.get(`https://questionario-sx95.onrender.com/respostas/questionario/${selectedQuestionnaire.id}`)
+        .then(response => {
+          setRespostas(response.data);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar respostas da API:', error);
+        });
+    }
+  }, [selectedQuestionnaire]);
+
+  useEffect(() => {
+    // Simulação de busca inicial de questionários
+    const mockQuestionnaires: Questionnaire[] = [
+      { id: 1, title: 'Questionário 1', description: 'Descrição do Questionário 1', questions: [] },
+      { id: 2, title: 'Questionário 2', description: 'Descrição do Questionário 2', questions: [] },
+    ];
+    setQuestionnaires(mockQuestionnaires);
+  }, []);
+
   const toggleTheme = () => {
-    setDarkTheme((prevTheme) => !prevTheme);
+    setDarkTheme(prevTheme => !prevTheme);
   };
 
   const toggleSidebar = () => {
-    setSidebarOpen((prevSidebarOpen) => !prevSidebarOpen);
+    setSidebarOpen(prevSidebarOpen => !prevSidebarOpen);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,25 +105,19 @@ const Dashboard: React.FC = () => {
     setSelectedQuestionnaire(questionnaire);
   };
 
-  const prepareAnalyticsData = (questionnaire: Questionnaire): { data: GraphData } => {
-    // Lógica para preparar dados analíticos aqui
+  const prepareAnalyticsData = (respostas: Resposta[]): { data: GraphData } => {
+    const labels = respostas.map(resposta => resposta.question.question);
+    const data = respostas.map(resposta => respostas.filter(r => r.resposta === resposta.resposta).length);
+
     return {
       data: {
-        labels: questionnaire.questions.map((question) => question.question),
+        labels,
         datasets: [
           {
             label: 'Respostas',
-            data: [10, 20, 30], // Dados fictícios para exemplo
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-            ],
+            data,
+            backgroundColor: labels.map(() => 'rgba(54, 162, 235, 0.2)'),
+            borderColor: labels.map(() => 'rgba(54, 162, 235, 1)'),
             borderWidth: 1,
           },
         ],
@@ -110,7 +126,7 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className={`flex min-h-screen ${darkTheme ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
+    <div className={`flex h-screen ${darkTheme ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'}`}>
       {sidebarOpen && (
         <aside className={`w-64 bg-gray-200 ${darkTheme ? 'text-white bg-gray-800' : 'text-gray-800'}`}>
           <nav className="p-4">
@@ -160,7 +176,7 @@ const Dashboard: React.FC = () => {
         </aside>
       )}
       <main className="flex-1 p-4">
-        <header className="flex items-center  mb-4">
+        <header className="flex items-center mb-4">
           <button onClick={toggleSidebar} className="p-2 rounded hover:bg-gray-300">
             {sidebarOpen ? <FiChevronLeft /> : <FiChevronRight />}
           </button>
@@ -177,10 +193,9 @@ const Dashboard: React.FC = () => {
             toggleSidebar={toggleSidebar}
           />
         )}
-        {selectedTab === 'analytics' && (
+        {selectedTab === 'analytics' && selectedQuestionnaire && (
           <Analytics
-            questionnaires={questionnaires}
-            darkTheme={darkTheme}
+            respostas={respostas}
             searchQuery={searchQuery}
             selectedFilter={selectedFilter}
             handleSearchChange={handleSearchChange}
