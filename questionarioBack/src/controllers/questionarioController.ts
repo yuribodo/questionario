@@ -41,7 +41,7 @@ export const createQuestionario = async (req: Request, res: Response) => {
   const { title, description, userId } = req.body;
   try {
     const newQuestionario = await prisma.questionario.create({
-      data: { title, description, userId: parseInt(userId) },
+      data: { title, description, userId: userId },
     });
     res.status(201).json(newQuestionario);
   } catch (error) {
@@ -83,7 +83,7 @@ export const createQuestionarioWithQuestions = async (req: Request, res: Respons
       data: {
         title,
         description,
-        userId: parseInt(userId),
+        userId: userId,
         questions: {
           create: questions,
         },
