@@ -1,147 +1,213 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import {
+  TextField,
+  Button,
+  Container,
+  Paper,
+  Snackbar,
+  Typography
+} from '@mui/material';
+import { motion } from 'framer-motion';
+import { useAtom } from 'jotai';
+import { darkThemeAtom } from '../lib/atom';
+//import { useMediaQuery } from 'react-responsive';
+
+const api = process.env.API_LINK;
 
 interface Question {
-  id: number;
+  type: 'OBJETIVA' | 'DISCURSIVA';
   question: string;
-  correctAnswer: string;
+  choices: string[];
+  correctChoice: string;
 }
 
 interface Questionnaire {
   id: string;
   title: string;
-  category: string;
+  description: string;
   questions: Question[];
 }
 
 const EditQuestionnaire = () => {
-  const { id } = useParams<{ id?: string }>(); // id é opcional (pode ser undefined)
+  const { id } = useParams<{ id?: string }>();
   const [questionnaire, setQuestionnaire] = useState<Questionnaire | null>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light'); // Estado para controlar o tema
+  const [darkTheme] = useAtom(darkThemeAtom);
+  //const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    const fetchQuestionnaire = async () => {
+      try {
+        const response = await axios.get(`${api}/questionarios/${id}`);
+        if (response.data) {
+          const fetchedQuestionnaire: Questionnaire = response.data;
+          setQuestionnaire(fetchedQuestionnaire);
+        } else {
+          setErrorMessage('Failed to fetch questionnaire');
+        }
+      } catch (error) {
+        setErrorMessage('Error fetching questionnaire');
+      }
+    };
+
     if (id) {
-      // Fetch questionnaire data only if id is defined
-      const fetchQuestionnaire = async () => {
-        // Simulate API call or database query
-        const fetchedQuestionnaire: Questionnaire = {
-          id: id,
-          title: 'Questionnaire ' + id,
-          category: 'General',
-          questions: [
-            { id: 1, question: 'Sample question 1', correctAnswer: 'Sample answer 1' },
-            { id: 2, question: 'Sample question 2', correctAnswer: 'Sample answer 2' },
-          ],
-        };
-        setQuestionnaire(fetchedQuestionnaire);
-      };
       fetchQuestionnaire();
     }
   }, [id]);
 
-  const handleSave = () => {
-    // Save logic would be implemented here
-    alert('Questionnaire saved!');
+  const handleQuestionChange = (index: number, field: keyof Question, value: string) => {
+    if (questionnaire) {
+      const newQuestions = [...questionnaire.questions];
+      newQuestions[index] = {
+        ...newQuestions[index],
+        [field]: value,
+      };
+      setQuestionnaire({ ...questionnaire, questions: newQuestions });
+    }
   };
 
-  const toggleTheme = () => {
-    // Toggle between light and dark theme
-    setTheme(theme === 'light' ? 'dark' : 'light');
+  const handleChoiceChange = (index: number, choiceIndex: number, value: string) => {
+    if (questionnaire) {
+      const newQuestions = [...questionnaire.questions];
+      newQuestions[index].choices[choiceIndex] = value;
+      setQuestionnaire({ ...questionnaire, questions: newQuestions });
+    }
   };
 
-  // Função auxiliar para obter o placeholder conforme o tema
-  const getPlaceholder = (field: string) => {
-    return theme === 'light' ? `Enter ${field}` : `Enter ${field} (${theme} mode)`;
+  const addChoice = (index: number) => {
+    if (questionnaire) {
+      const newQuestions = [...questionnaire.questions];
+      newQuestions[index].choices.push('');
+      setQuestionnaire({ ...questionnaire, questions: newQuestions });
+    }
   };
 
-  // Estilos baseados no tema selecionado
-  const containerClass = theme === 'light' ? 'container mx-auto p-4 bg-gray-100' : 'container mx-auto p-4 bg-gray-800 text-white';
-  const cardClass = theme === 'light' ? 'max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden' : 'max-w-md mx-auto bg-gray-700 shadow-md rounded-lg overflow-hidden';
+  const handleSave = async () => {
+    try {
+      if (!questionnaire || !questionnaire.title || !questionnaire.description) {
+        setErrorMessage('Title and description are required');
+        return;
+      }
 
-  const inputClass = theme === 'light' ? 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-black' : 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 text-black';
+      const response = await axios.put(`${api}/questionarios/${questionnaire.id}`, questionnaire);
+      if (response.status === 200) {
+        setSuccessMessage('Questionário atualizado com sucesso! 🎉');
+        setTimeout(() => setSuccessMessage(null), 5000);
+      } else {
+        setErrorMessage('Failed to update questionnaire');
+      }
+    } catch (error) {
+      setErrorMessage('Error saving questionnaire');
+    }
+  };
 
-  const labelClass = theme === 'light' ? 'block text-gray-700 text-sm font-bold mb-2' : 'block text-gray-300 text-sm font-bold mb-2';
-
-  const buttonClass = theme === 'light' ? 'w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md focus:outline-none' : 'w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none';
-
-  if (!id || !questionnaire) {
-    return <p className={theme === 'light' ? 'text-center text-gray-600' : 'text-center text-gray-400'}>Loading...</p>;
+  if (!questionnaire) {
+    return <p className={`text-center ${darkTheme ? 'text-gray-400' : 'text-gray-600'}`}>Carregando...</p>;
   }
 
   return (
-    <div className={containerClass}>
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={toggleTheme}
-          className={theme === 'light' ? 'text-gray-600 hover:text-gray-800 focus:outline-none' : ' hover:text-gray-200 focus:outline-none'}
-        >
-          {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-        </button>
-      </div>
-      <h2 className={theme === 'light' ? 'text-3xl font-bold mb-6 text-center' : 'text-3xl font-bold mb-6 text-center text-white'}>
-        Edit Questionnaire {id}
-      </h2>
-      <div className={cardClass}>
-        <div className="px-6 py-4">
-          <label className={labelClass}>Title</label>
-          <input
-            type="text"
-            placeholder={getPlaceholder('title')}
-            value={questionnaire.title}
-            onChange={(e) => setQuestionnaire({ ...questionnaire, title: e.target.value })}
-            className={inputClass}
-          />
-        </div>
-        <div className="px-6 py-4">
-          <label className={labelClass}>Category</label>
-          <input
-            type="text"
-            placeholder={getPlaceholder('category')}
-            value={questionnaire.category}
-            onChange={(e) => setQuestionnaire({ ...questionnaire, category: e.target.value })}
-            className={inputClass}
-          />
-        </div>
-        <div className="px-6 py-4">
-          <h3 className={theme === 'light' ? 'text-lg font-bold mb-4' : 'text-lg font-bold mb-4 text-white'}>Questions</h3>
-          {questionnaire.questions.map((question, index) => (
-            <div key={index} className="mb-4">
-              <label className={labelClass}>Question {index + 1}</label>
-              <input
-                type="text"
-                placeholder={getPlaceholder(`question ${index + 1}`)}
-                value={question.question}
-                onChange={(e) => {
-                  const newQuestions = [...questionnaire.questions];
-                  newQuestions[index].question = e.target.value;
-                  setQuestionnaire({ ...questionnaire, questions: newQuestions });
-                }}
-                className={inputClass}
-              />
-              <label className={labelClass}>Correct Answer</label>
-              <input
-                type="text"
-                placeholder={getPlaceholder(`correct answer ${index + 1}`)}
-                value={question.correctAnswer}
-                onChange={(e) => {
-                  const newQuestions = [...questionnaire.questions];
-                  newQuestions[index].correctAnswer = e.target.value;
-                  setQuestionnaire({ ...questionnaire, questions: newQuestions });
-                }}
-                className={inputClass}
-              />
+    <div className={`gray p-8 ${darkTheme ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-800'}`}>
+      <Container component="main" maxWidth="md">
+        <Paper elevation={3} style={{ padding: '2rem', backgroundColor: darkTheme ? '#1e293b' : 'white', color: darkTheme ? 'white' : 'black' }}>
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <TextField
+              label="Título"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={questionnaire.title}
+              onChange={(e) => setQuestionnaire({ ...questionnaire, title: e.target.value })}
+              InputLabelProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+              InputProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+            />
+            <TextField
+              label="Descrição"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              multiline
+              rows={4}
+              value={questionnaire.description}
+              onChange={(e) => setQuestionnaire({ ...questionnaire, description: e.target.value })}
+              InputLabelProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+              InputProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+            />
+            <div>
+              <Typography variant="h5" component="h2" gutterBottom>
+                Perguntas
+              </Typography>
+              {questionnaire.questions.map((question, index) => (
+                <motion.div
+                  key={index}
+                  className={`mb-6 p-4 ${darkTheme ? 'bg-slate-700' : 'bg-gray-200'} rounded`}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <TextField
+                    label="Pergunta"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={question.question}
+                    onChange={(e) => handleQuestionChange(index, 'question', e.target.value)}
+                    InputLabelProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+                    InputProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+                  />
+                  <div>
+                    {question.choices.map((choice, choiceIndex) => (
+                      <TextField
+                        key={choiceIndex}
+                        label={`Opção ${choiceIndex + 1}`}
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                        value={choice}
+                        onChange={(e) => handleChoiceChange(index, choiceIndex, e.target.value)}
+                        InputLabelProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+                        InputProps={{ style: { color: darkTheme ? 'white' : 'black' } }}
+                      />
+                    ))}
+                    <Button
+                      type="button"
+                      onClick={() => addChoice(index)}
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      style={{ marginTop: '1rem' }}
+                    >
+                      Adicionar Opção
+                    </Button>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          ))}
-        </div>
-        <div className="px-6 py-4">
-          <button
-            onClick={handleSave}
-            className={buttonClass}
-          >
-            Save Questionnaire
-          </button>
-        </div>
-      </div>
+            <Button
+              type="button"
+              onClick={handleSave}
+              variant="contained"
+              color="primary"
+              fullWidth
+              style={{ marginTop: '1rem' }}
+            >
+              Salvar Questionário
+            </Button>
+          </motion.div>
+          <Snackbar
+            open={!!successMessage || !!errorMessage}
+            autoHideDuration={5000}
+            onClose={() => {
+              setSuccessMessage(null);
+              setErrorMessage(null);
+            }}
+            message={successMessage || errorMessage || ''}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          />
+        </Paper>
+      </Container>
     </div>
   );
 };
