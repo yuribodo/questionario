@@ -33,7 +33,7 @@ export const submitResposta = async (req: Request, res: Response) => {
   }
 };
 
-
+// Retorna respostas por ID do questionário
 export const getRespostasByQuestionarioId = async (req: Request, res: Response) => {
   const { questionarioId } = req.params;
   try {
@@ -52,6 +52,7 @@ export const getRespostasByQuestionarioId = async (req: Request, res: Response) 
   }
 };
 
+// Retorna respostas por ID do usuário
 export const getRespostasByUsuarioId = async (req: Request, res: Response) => {
   const { usuarioId } = req.params;
   try {

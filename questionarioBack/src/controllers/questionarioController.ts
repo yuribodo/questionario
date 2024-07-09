@@ -38,10 +38,10 @@ export const getQuestionarioById = async (req: Request, res: Response) => {
 
 // Cria um novo questionário
 export const createQuestionario = async (req: Request, res: Response) => {
-  const { title, description } = req.body;
+  const { title, description, userId } = req.body;
   try {
     const newQuestionario = await prisma.questionario.create({
-      data: { title, description },
+      data: { title, description, userId: parseInt(userId) },
     });
     res.status(201).json(newQuestionario);
   } catch (error) {
@@ -77,12 +77,13 @@ export const deleteQuestionario = async (req: Request, res: Response) => {
 
 // Cria um novo questionário com suas perguntas associadas
 export const createQuestionarioWithQuestions = async (req: Request, res: Response) => {
-  const { title, description, questions } = req.body;
+  const { title, description, questions, userId } = req.body;
   try {
     const newQuestionario = await prisma.questionario.create({
       data: {
         title,
         description,
+        userId: parseInt(userId),
         questions: {
           create: questions,
         },
@@ -96,4 +97,3 @@ export const createQuestionarioWithQuestions = async (req: Request, res: Respons
     res.status(500).json({ error: 'Internal server error' });
   }
 };
-
