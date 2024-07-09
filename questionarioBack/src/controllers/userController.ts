@@ -76,3 +76,25 @@ export const createUser = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+  // Função para lidar com criação de usuário via webhook do Clerk
+async function createUserFromWebhook(req: Request, res: Response) {
+  const userData = req.body; // Assume que o webhook do Clerk envia dados do usuário aqui
+
+  try {
+    const user = await prisma.user.create({
+      data: {
+        id: userData.id,
+        email: userData.email,
+        password: userData.password,
+        // Outros campos que podem vir do webhook do Clerk
+      },
+    });
+    res.status(201).json(user);
+  } catch (error) {
+    console.error('Erro ao criar usuário:', error);
+    res.status(500).json({ error: 'Erro ao criar usuário' });
+  }
+}
+
+export { createUserFromWebhook };

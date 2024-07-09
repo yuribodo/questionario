@@ -5,6 +5,7 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  createUserFromWebhook,
 } from '../controllers/userController';
 
 const userRouter = express.Router();
@@ -14,5 +15,6 @@ userRouter.get('/users', getAllUsers);
 userRouter.get('/users/:id', getUserById);
 userRouter.put('/users/:id', updateUser);
 userRouter.delete('/users/:id', deleteUser);
+userRouter.post('/webhook/clerk', createUserFromWebhook)
 
 export default userRouter;
