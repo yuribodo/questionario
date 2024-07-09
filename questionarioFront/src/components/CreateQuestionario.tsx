@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+import { useUser } from "@clerk/clerk-react";
 import {
   TextField,
   Button,
@@ -38,7 +39,7 @@ const CreateQuestionario = () => {
   });
   const [darkTheme] = useAtom(darkThemeAtom);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
-
+  const user = useUser()
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([
     { type: 'OBJETIVA', question: '', choices: [], correctChoice: '' },
@@ -76,6 +77,7 @@ const CreateQuestionario = () => {
       const response = await axios.post(`${api}/questionarios/with-questions`, {
         title: data.title,
         description: data.description,
+        userId: "user-id-from-clerk",
         questions: questions,
       });
       console.log('Questionário criado com sucesso:', response.data);

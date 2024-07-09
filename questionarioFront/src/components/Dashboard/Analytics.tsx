@@ -37,7 +37,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
     chart: {
       type: 'donut' as const,
     },
-    labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+    labels: ['Questionario A', 'Questionario B', 'Questionario C', 'Questionario D', 'Questionario E'],
   };
 
   return (
@@ -64,13 +64,13 @@ const Analytics: React.FC<AnalyticsProps> = ({
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className=" rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Gráfico de Linha</h3>
+          <h3 className="text-lg font-bold mb-2">Respostas ao Decorrer do Tempo</h3>
           <div className="w-full h-64">
             <ReactApexChart options={lineOptions} series={lineSeries} type="line" />
           </div>
         </div>
         <div className=" rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Gráfico de Pizza</h3>
+          <h3 className="text-lg font-bold mb-2">Respotas por Questionario</h3>
           <div className="w-full h-64">
             <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
           </div>
