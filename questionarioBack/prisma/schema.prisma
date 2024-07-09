@@ -13,9 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
+
 enum QuestionType {
   OBJETIVA
   DISCURSIVA
+}
+
+model User {
+  id             String         @id @default(uuid()) // Alterado para String
+  email          String         @unique
+  password       String
+  questionarios  Questionario[]
+  respostas      Resposta[]
 }
 
 model Questionario {
@@ -24,6 +34,10 @@ model Questionario {
   description String
   questions   Question[]
   respostas   Resposta[]
+  userId      String     // Alterado para String
+  user        User       @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
 
 model Question {
@@ -41,14 +55,16 @@ model Question {
 
 model Resposta {
   id              Int       @id @default(autoincrement())
-  usuarioId       Int
+  usuarioId       String    // Alterado para String
   questionarioId  Int
   questionId      Int
   resposta        String    // Pode ser ajustado para o tipo apropriado, dependendo do formato da resposta (por exemplo, String para texto, Int para ID de escolha, etc.)
   createdAt       DateTime  @default(now())
   questionario    Questionario @relation(fields: [questionarioId], references: [id])
   question        Question   @relation(fields: [questionId], references: [id])
+  user            User       @relation(fields: [usuarioId], references: [id])
 
   @@index([usuarioId])
   @@index([questionarioId])
 }
+
