@@ -53,13 +53,21 @@ export const createQuestionario = async (req: Request, res: Response) => {
 export const updateQuestionario = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, description } = req.body;
+
+  // Validação básica dos dados recebidos
+  if (!title || !description) {
+    return res.status(400).json({ error: 'Title and description are required' });
+  }
+
   try {
     const updatedQuestionario = await prisma.questionario.update({
-      where: { id: id },
+      where: { id: Number(id) },
       data: { title, description },
     });
+
     res.json(updatedQuestionario);
   } catch (error) {
+    console.error('Error updating questionário:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
