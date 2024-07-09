@@ -7,6 +7,7 @@ import Analytics from './Analytics';
 import Responses from './Responses';
 import Settings from './Settings';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+const api = process.env.API_LINK
 
 export interface Question {
   id: number;
@@ -55,7 +56,7 @@ const Dashboard: React.FC = () => {
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
   console.log(respostas)
   useEffect(() => {
-    axios.get('https://questionario-sx95.onrender.com/questionarios')
+    axios.get(`${api}/questionarios`)
       .then(response => {
         setQuestionnaires(response.data);
       })
@@ -66,7 +67,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (selectedQuestionnaire) {
-      axios.get(`https://questionario-sx95.onrender.com/respostas/questionario/${selectedQuestionnaire.id}`)
+      axios.get(`${api}/respostas/questionario/${selectedQuestionnaire.id}`)
         .then(response => {
           setRespostas(response.data);
         })
