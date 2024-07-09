@@ -55,7 +55,7 @@ export const updateQuestionario = async (req: Request, res: Response) => {
   const { title, description } = req.body;
   try {
     const updatedQuestionario = await prisma.questionario.update({
-      where: { id: parseInt(id) },
+      where: { id: id },
       data: { title, description },
     });
     res.json(updatedQuestionario);
@@ -68,7 +68,7 @@ export const updateQuestionario = async (req: Request, res: Response) => {
 export const deleteQuestionario = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
-    await prisma.questionario.delete({ where: { id: parseInt(id) } });
+    await prisma.questionario.delete({ where: { id: id } });
     res.status(204).end();
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
