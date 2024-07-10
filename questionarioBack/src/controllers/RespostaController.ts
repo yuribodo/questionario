@@ -5,20 +5,19 @@ const prisma = new PrismaClient();
 export const submitResposta = async (req: Request, res: Response) => {
   const { usuarioId, questionarioId, respostas } = req.body;
   try {
-    const parsedUsuarioId = parseInt(usuarioId, 10);
-    const parsedQuestionarioId = parseInt(questionarioId, 10);
-
-    if (isNaN(parsedUsuarioId) || isNaN(parsedQuestionarioId)) {
-      return res.status(400).json({ error: 'Invalid user ID or questionnaire ID' });
+    // Verifica se o usuarioId e questionarioId são números válidos
+    if (isNaN(parseInt(questionarioId, 10))) {
+      return res.status(400).json({ error: 'Invalid questionnaire ID' });
     }
 
+    // Cria novas respostas usando uma transação
     const novasRespostas = await prisma.$transaction(
       respostas.map((resposta: { questionId: string; resposta: string }) => {
         const parsedQuestionId = parseInt(resposta.questionId, 10);
         return prisma.resposta.create({
           data: {
-            usuarioId: parsedUsuarioId,
-            questionarioId: parsedQuestionarioId,
+            usuarioId,
+            questionarioId: parseInt(questionarioId, 10),
             questionId: parsedQuestionId,
             resposta: resposta.resposta,
           },
@@ -32,6 +31,7 @@ export const submitResposta = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 // Retorna respostas por ID do questionário
 export const getRespostasByQuestionarioId = async (req: Request, res: Response) => {
