@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { SignedOut, SignInButton, SignUpButton, UserButton, SignedIn, SignOutButton  } from "@clerk/clerk-react";
+import { SignedOut, SignInButton, SignUpButton, UserButton, SignedIn, SignOutButton, useUser } from "@clerk/clerk-react";
 import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
+import axios from 'axios';
 
 interface NavbarProps {
   onSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -11,7 +12,26 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
+  const { user } = useUser();
 
+  useEffect(() => {
+    const checkUserInDatabase = async (userId: string) => {
+      try {
+        const response = await axios.get(`/api/checkUser/${userId}`);
+        if (response.data.exists) {
+          console.log('User exists in database');
+        } else {
+          console.log('User does not exist in database');
+        }
+      } catch (error) {
+        console.error('Error checking user in database:', error);
+      }
+    };
+
+    if (user) {
+      checkUserInDatabase(user.id);
+    }
+  }, [user]);
 
   const line1Variants = {
     open: { rotate: 45, y: 10 },
@@ -30,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
 
   return (
     <motion.div 
-      className='h-[10vh] w-full bg-gray-800  shadow-lg top-0 left-0 z-10'
+      className='h-[10vh] w-full bg-gray-800 shadow-lg top-0 left-0 z-10'
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
@@ -98,35 +118,34 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
             <div className='flex mr-2 text-white space-x-6'>
               { !isMobile && (
                 <>
-                  <SignOutButton/>
-                 
+                  <SignOutButton />
                 </>
               )}
-               <UserButton/>
+              <UserButton />
             </div>
           </SignedIn>
           <div className='md:hidden flex items-center'>
             <button onClick={() => setMenuOpen(!menuOpen)}>
-            <motion.div className="relative w-6 h-6">
-              <motion.div 
-                className="absolute w-full h-0.5 bg-white"
-                variants={line1Variants}
-                initial="closed"
-                animate={menuOpen ? "open" : "closed"}
-              />
-              <motion.div 
-                className="absolute w-full h-0.5 bg-white mt-2"
-                variants={line2Variants}
-                initial="closed"
-                animate={menuOpen ? "open" : "closed"}
-              />
-              <motion.div 
-                className="absolute w-full h-0.5 bg-white mt-4"
-                variants={line3Variants}
-                initial="closed"
-                animate={menuOpen ? "open" : "closed"}
-              />
-            </motion.div>
+              <motion.div className="relative w-6 h-6">
+                <motion.div 
+                  className="absolute w-full h-0.5 bg-white"
+                  variants={line1Variants}
+                  initial="closed"
+                  animate={menuOpen ? "open" : "closed"}
+                />
+                <motion.div 
+                  className="absolute w-full h-0.5 bg-white mt-2"
+                  variants={line2Variants}
+                  initial="closed"
+                  animate={menuOpen ? "open" : "closed"}
+                />
+                <motion.div 
+                  className="absolute w-full h-0.5 bg-white mt-4"
+                  variants={line3Variants}
+                  initial="closed"
+                  animate={menuOpen ? "open" : "closed"}
+                />
+              </motion.div>
             </button>
           </div>
         </div>
