@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { SignedOut, SignInButton, SignUpButton, UserButton, SignedIn, SignOutButton, useUser } from "@clerk/clerk-react";
 import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
+const api = process.env.API_LINK;
 import axios from 'axios';
 
 interface NavbarProps {
@@ -14,22 +15,33 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const { user } = useUser();
 
+  const generateRandomPassword = () => {
+    const length = 12;
+    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let password = "";
+    for (let i = 0, n = charset.length; i < length; ++i) {
+      password += charset.charAt(Math.floor(Math.random() * n));
+    }
+    return password;
+  };
+
   useEffect(() => {
-    const checkUserInDatabase = async (userId: string) => {
+    const checkUserInDatabase = async (userId: string, email: string) => {
       try {
-        const response = await axios.get(`/api/checkUser/${userId}`);
+        const password = generateRandomPassword();
+        const response = await axios.post(`${api}/user/checkUser`, { id: userId, email, password });
         if (response.data.exists) {
           console.log('User exists in database');
         } else {
-          console.log('User does not exist in database');
+          console.log('User does not exist in database and was created');
         }
       } catch (error) {
         console.error('Error checking user in database:', error);
       }
     };
 
-    if (user) {
-      checkUserInDatabase(user.id);
+    if (user && user.primaryEmailAddress) {
+      checkUserInDatabase(user.id, user.primaryEmailAddress.emailAddress);
     }
   }, [user]);
 
