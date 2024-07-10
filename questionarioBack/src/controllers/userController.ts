@@ -97,4 +97,24 @@ async function createUserFromWebhook(req: Request, res: Response) {
   }
 }
 
+// Função para verificar se o usuário existe no banco de dados
+export const checkUserInDatabase = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (user) {
+      res.json({ exists: true });
+    } else {
+      res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error('Erro ao verificar usuário no banco de dados:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 export { createUserFromWebhook };
