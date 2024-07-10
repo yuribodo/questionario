@@ -17,6 +17,6 @@ userRouter.get('/users/:id', getUserById);
 userRouter.put('/users/:id', updateUser);
 userRouter.delete('/users/:id', deleteUser);
 userRouter.post('/webhook/clerk', createUserFromWebhook)
-userRouter.get('/checkUser/:id', checkUserInDatabase)
+userRouter.post('/checkUser', checkUserInDatabase);
 
 export default userRouter;
