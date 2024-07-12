@@ -16,6 +16,21 @@ export const getAllQuestionarios = async (req: Request, res: Response) => {
   }
 };
 
+export const getQuestionariosByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const questionarios = await prisma.questionario.findMany({
+      where: { userId: userId },
+      include: {
+        questions: true,
+      },
+    });
+    res.json(questionarios);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // Retorna um questionário pelo ID com suas perguntas
 export const getQuestionarioById = async (req: Request, res: Response) => {
   const { id } = req.params;
