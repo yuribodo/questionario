@@ -10,6 +10,6 @@ questionarioRouter.post('/', createQuestionario);
 questionarioRouter.post('/with-questions', createQuestionarioWithQuestions); 
 questionarioRouter.put('/:id', updateQuestionario);
 questionarioRouter.delete('/:id', deleteQuestionario);
-questionarioRouter.get('/user/:id', getQuestionariosByUserId);
+questionarioRouter.get('/user/:userId', getQuestionariosByUserId);
 
 export default questionarioRouter

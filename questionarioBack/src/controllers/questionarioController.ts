@@ -25,11 +25,17 @@ export const getQuestionariosByUserId = async (req: Request, res: Response) => {
         questions: true,
       },
     });
-    res.json(questionarios);
+    if (questionarios.length > 0) {
+      res.json(questionarios);
+    } else {
+      res.status(404).json({ error: 'No questionarios found for this user' });
+    }
   } catch (error) {
+    console.error('Error fetching questionarios for user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 // Retorna um questionário pelo ID com suas perguntas
 export const getQuestionarioById = async (req: Request, res: Response) => {
