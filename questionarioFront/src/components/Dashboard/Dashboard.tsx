@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useUser } from '@clerk/clerk-react';
 import { useAtom } from 'jotai';
 import { darkThemeAtom } from '../../lib/atom';
 import Overview from './Overview';
@@ -54,16 +55,22 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
+  const {user} = useUser()
+
   console.log(respostas)
+
+
   useEffect(() => {
-    axios.get(`${api}/questionarios`)
-      .then(response => {
-        setQuestionnaires(response.data);
-      })
-      .catch(error => {
-        console.error('Erro ao buscar dados da API:', error);
-      });
-  }, []);
+    if (user?.id) {
+      axios.get(`${api}/questionarios/user/${user.id}`)
+        .then(response => {
+          setQuestionnaires(response.data);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados da API:', error);
+        });
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     if (selectedQuestionnaire) {
