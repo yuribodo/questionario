@@ -26,3 +26,4 @@ export const questionariosAtom = atom<Questionario[]>([]);
 
 
 export const darkThemeAtom = atom(true);
+export const searchQueryAtom = atom<string>('');

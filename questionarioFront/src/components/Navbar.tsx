@@ -5,15 +5,15 @@ import { motion } from 'framer-motion';
 import { useMediaQuery } from 'react-responsive';
 const api = process.env.API_LINK;
 import axios from 'axios';
+import { searchQueryAtom } from '../lib/atom';
+import { useAtom } from 'jotai';
 
-interface NavbarProps {
-  onSearchChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
+const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   const { user } = useUser();
+  const [searchQuery, setSearchQuery] = useAtom(searchQueryAtom);
 
   const generateRandomPassword = () => {
     const length = 12;
@@ -24,6 +24,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
     }
     return password;
   };
+
+  
 
   useEffect(() => {
     const checkUserInDatabase = async (userId: string, email: string) => {
@@ -60,6 +62,10 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
     closed: { rotate: 0, y: 0 },
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <motion.div 
       className='h-[10vh] w-full bg-gray-800 shadow-lg top-0 left-0 z-10'
@@ -78,7 +84,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSearchChange }) => {
             type="text" 
             className='p-2 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-500 w-32 md:w-48' 
             placeholder="Buscar..." 
-            onChange={onSearchChange}
+            value={searchQuery}
+            onChange={handleInputChange}
           />
           <div className='hidden md:flex space-x-6'>
             <Link to="/" className='hover:text-blue-500 transition-colors'>
