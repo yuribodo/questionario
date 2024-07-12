@@ -1,6 +1,6 @@
-# My Full-Stack Template
+# Questionario FullStack Project
 
-Welcome to the repository for my full-stack template, integrating a React front-end with a Node.js and Express back-end. This README provides a detailed explanation of the application, its components, and how to get started.
+Welcome to the repository for my Questionario FullStack Project, integrating a React front-end with a Node.js and Express back-end. This README provides a detailed explanation of the application, its components, and how to get started.
 
 ## Table of Contents
 
@@ -14,7 +14,7 @@ Welcome to the repository for my full-stack template, integrating a React front-
 
 ## Introduction
 
-This application was conceived as a blueprint for rapid full-stack development, offering the seamless integration of a dynamic React front-end and a robust, scalable Node.js back-end. This amalgamation of technologies ensures that developers can focus on building features without the usual setup overhead.
+This application is focused for you create yours quiz and know what people will answer
 
 ## Technologies Used
 
@@ -25,7 +25,7 @@ This application was conceived as a blueprint for rapid full-stack development, 
 - **TypeScript**: A superset of JavaScript, offering static type-checking and the latest ECMAScript features.
 - **TailwindCSS**: A utility-first CSS framework packed with classes like `flex`, `pt-4`, `text-center` and more to style your websites without leaving your HTML.
 - **React-Router-Dom**: A routing library for React, enabling navigation among views.
-- **Jest**: A delightful JavaScript Testing Framework with a focus on simplicity.
+- **Clerk**: Oauth librarie
 
 ### Backend
 
@@ -34,7 +34,7 @@ This application was conceived as a blueprint for rapid full-stack development, 
 - **TypeScript**: Brings static typing to JavaScript, ensuring a more predictable runtime behavior.
 - **Jest**: Used for writing unit and integration tests for the backend.
 - **PostgreSQL**: A powerful, open-source object-relational database system.
-- **Nodemon**: A utility that monitors for any changes in your source and automatically restarts your server.
+- **Prisma**: An ORM to help developing backends
 
 ## Installation
 
@@ -49,21 +49,41 @@ Before you start, ensure you have `node` and `npm` installed on your machine.
 2. **Navigate to the repository**:
 
    ```bash
-   cd full-stack-template
+   cd questionario
    ```
 
-3. **Install the dependencies**:
+3. Set enviroment variables
+  1. GoCreate a .env file inside questionarioBack and create a .env file inside of questionarioFront 
+      ```
+        cd questionarioBack && create .env
+      ```
+       ```
+        cd questionarioFront && create .env
+      ```
+
+      
+  2. At the questinarioFront make 2 variables
+     ```
+     API_LINK= Put the link of the backend for exammple hhtp://localhost:8080
+     VITE_CLERK_PUBLISHABLE_KEY= Here you need to create an account on Clerk and put your publishablekey
+     ```
+  3. At the questionarioBack make 1 variable
+     ```
+     DATABASE_URL= Here you need to put you link for your PostgresSQL data
+     ```
+
+5. **Install the dependencies**:
 
    - For Frontend:
    
      ```bash
-     cd frontend && npm install
+     cd questionarioFront && npm install
      ```
 
    - For Backend:
 
      ```bash
-     cd backend && npm install
+     cd questionarioBack && npm install
      ```
 
 ## Running the Application
@@ -71,7 +91,7 @@ Before you start, ensure you have `node` and `npm` installed on your machine.
 - **To run the frontend**:
 
   ```bash
-  npm run start-frontend
+  npm run dev
   ```
 
   This starts the React application on `http://localhost:5173` (or another available port).
@@ -79,27 +99,18 @@ Before you start, ensure you have `node` and `npm` installed on your machine.
 - **To run the backend**:
 
   ```bash
-  npm run start-backend
+  npm run dev
   ```
 
-  This initializes the Express server, typically on `http://localhost:3000`.
+  This initializes the Express server, typically on `http://localhost:8080`.
 
-- **To run both simultaneously**:
-
-  ```bash
-  npm run start
-  ```
-
-  This will invoke `concurrently` to start both the front and back ends.
 
 Ensure that the frontend and backend are configured to run on separate ports to avoid conflicts.
 
 ## Conclusion
 
-This full-stack application setup is intended to accelerate the development process by providing a cohesive blend of some of the best technologies in web development today. Whether you're looking to create a small prototype or build a large-scale application, this repository provides a solid foundation. Happy coding!
+Hope you like my project please tell me anything i can improve on it. See ya
 
 ---
 
-If you find any bugs or have a feature request, please open an issue on [GitHub](https://github.com/gabrielkrapp/full-stack-template/issues).
-
-**Made with ❤️ by [Gabriel Krapp](https://github.com/gabrielkrapp)**.
+**Made with ❤️ by [Mario Mota](https://github.com/yuribodo)**.
