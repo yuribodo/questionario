@@ -6,6 +6,7 @@ interface AnalyticsProps {
   selectedFilter: string;
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleFilterChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  userQuestionnaireCount: number;
 }
 
 const Analytics: React.FC<AnalyticsProps> = ({
@@ -13,6 +14,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
   selectedFilter,
   handleSearchChange,
   handleFilterChange,
+  userQuestionnaireCount,
 }) => {
   // Dados de exemplo para o gráfico de linha
   const lineSeries = [{
@@ -75,6 +77,10 @@ const Analytics: React.FC<AnalyticsProps> = ({
             <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
           </div>
         </div>
+      </div>
+      <div className="mt-20">
+        <p className="text-lg font-bold">Número de Questionários Criados:</p>
+        <p className="text-xl">{userQuestionnaireCount}</p>
       </div>
     </div>
   );

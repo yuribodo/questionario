@@ -55,22 +55,27 @@ const Dashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState<Questionnaire | null>(null);
+  const [userQuestionnaireCount, setUserQuestionnaireCount] = useState<number>(0);
+
   const {user} = useUser()
 
   console.log(respostas)
-
+  console.log(userQuestionnaireCount)
 
   useEffect(() => {
     if (user?.id) {
       axios.get(`${api}/questionarios/user/${user.id}`)
         .then(response => {
           setQuestionnaires(response.data);
+          // Atualiza a contagem de questionários do usuário
+          setUserQuestionnaireCount(response.data.length);
         })
         .catch(error => {
           console.error('Erro ao buscar dados da API:', error);
         });
     }
   }, [user?.id]);
+  
 
   useEffect(() => {
     if (selectedQuestionnaire) {
@@ -203,7 +208,7 @@ const Dashboard: React.FC = () => {
             selectedFilter={selectedFilter}
             handleSearchChange={handleSearchChange}
             handleFilterChange={handleFilterChange}
-            
+            userQuestionnaireCount={userQuestionnaireCount}
             
       
           />
