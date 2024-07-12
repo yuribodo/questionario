@@ -6,7 +6,6 @@ import { darkThemeAtom } from './lib/atom';
 import { questionariosAtom } from './lib/atom';
 const api = process.env.API_LINK
 
-
 interface Question {
   id: number;
   type: string;

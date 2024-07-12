@@ -18,9 +18,6 @@ import Navbar from './components/Navbar'
 import QuestionnaireResponses from './components/QuestionnaireResponses'
 
 
-
-
-
 // Import your publishable key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -33,7 +30,6 @@ const QuestionarioWithId = () => {
   const questionarioId = id ? String(id) : ""; // Converter id para string ou definir como vazia se for undefined
   return <Questionario questionarioId={questionarioId} />;
 };
-
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
