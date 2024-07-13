@@ -54,22 +54,6 @@ const Analytics: React.FC<AnalyticsProps> = ({
     }
   }, [user?.id]);
 
-  // Dados de exemplo para o gráfico de linha
-  const lineSeries = [{
-    name: 'Series 1',
-    data: [30, 40, 35, 50, 49, 60, 70, 91, 125]
-  }];
-
-  const lineOptions = {
-    chart: {
-      type: 'line' as const,
-    },
-    series: lineSeries,
-    xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-    },
-  };
-
   const pieOptions = {
     chart: {
       type: 'donut' as const,
@@ -100,12 +84,10 @@ const Analytics: React.FC<AnalyticsProps> = ({
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Respostas ao Decorrer do Tempo</h3>
-          <div className="w-full h-64">
-            <ReactApexChart options={lineOptions} series={lineSeries} type="line" />
-          </div>
-        </div>
+      <div className="mt-4">
+        <p className="text-lg font-bold">Número de Questionários Criados</p>
+        <p className="text-xl">{userQuestionnaireCount}</p>
+      </div>
         <div className="rounded-lg p-4">
           <h3 className="text-lg font-bold mb-2">Respostas por Questionário</h3>
           <div className="w-full h-64">
@@ -113,10 +95,7 @@ const Analytics: React.FC<AnalyticsProps> = ({
           </div>
         </div>
       </div>
-      <div className="mt-20">
-        <p className="text-lg font-bold">Número de Questionários Criados:</p>
-        <p className="text-xl">{userQuestionnaireCount}</p>
-      </div>
+      
     </div>
   );
 };
