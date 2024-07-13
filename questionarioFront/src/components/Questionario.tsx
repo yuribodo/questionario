@@ -34,6 +34,8 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
   const { register, handleSubmit, reset, watch } = useForm<FormData>();
   const [isModalVisible, setModalVisible] = useState(false);
   const [submittedAnswers, setSubmittedAnswers] = useState<FormData | null>(null);
+  const [results, setResults] = useState<{ [key: string]: boolean }>({});
+  const [correctCount, setCorrectCount] = useState(0);
   const { user } = useUser();
 
   useEffect(() => {
@@ -62,6 +64,21 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
       setSubmittedAnswers(data);
       setModalVisible(true);
       console.log(response);
+
+      // Compare respostas do usuário com as corretas
+      const results: { [key: string]: boolean } = {};
+      let correctCount = 0;
+      questionario?.questions.forEach((question) => {
+        if (question.type === 'OBJETIVA') {
+          const isCorrect = question.correctChoice === data[question.id.toString()];
+          results[question.id] = isCorrect;
+          if (isCorrect) {
+            correctCount++;
+          }
+        }
+      });
+      setResults(results);
+      setCorrectCount(correctCount);
     } catch (error) {
       console.error('Error submitting answers:', error);
     }
@@ -127,10 +144,16 @@ const Questionario: React.FC<QuestionarioProps> = ({ questionarioId }) => {
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center">
           <div className="bg-white p-8 rounded-lg shadow-lg text-black">
             <h2 className="text-2xl font-bold mb-4">Respostas enviadas com sucesso!</h2>
+            <p className="text-xl font-semibold mb-4">{`Você acertou ${correctCount} de ${questionario.questions.length} questões.`}</p>
             {questionario.questions.map((question) => (
               <div key={question.id} className="mb-4">
                 <h3 className="font-semibold">{question.question}</h3>
                 <p><strong>Sua resposta: </strong>{submittedAnswers[question.id]}</p>
+                {question.type === 'OBJETIVA' && (
+                  <p className={`font-semibold ${results[question.id] ? 'text-green-600' : 'text-red-600'}`}>
+                    {results[question.id] ? 'Correta' : 'Errada'}
+                  </p>
+                )}
               </div>
             ))}
             <button onClick={handleModalClose} className="bg-blue-500 p-2 rounded text-white">
