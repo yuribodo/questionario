@@ -22,27 +22,36 @@ const Analytics: React.FC<AnalyticsProps> = ({
 }) => {
   const { user } = useUser();
   const [questionarios, setQuestionarios] = useState([]);
-  console.log(questionarios)
   const [pieLabels, setPieLabels] = useState<string[]>([]);
-
+  const [pieSeries, setPieSeries] = useState<number[]>([]);
+  console.log(questionarios)
   useEffect(() => {
-      if (user?.id) {
-        axios.get(`${api}/questionarios/user/${user.id}`)
+    if (user?.id) {
+      axios.get(`${api}/questionarios/user/${user.id}`)
         .then(response => {
-            setQuestionarios(response.data);
-            // Extrair títulos dos questionários e o número de respostas
-            const labels = response.data.map((questionario: any) => questionario.title);
-            
+          const questionariosData = response.data;
+          setQuestionarios(questionariosData);
 
-            setPieLabels(labels);
-            
-          })
-          .catch (error => {
-            console.error('Erro ao buscar dados do backend:', error);
-          }) 
-            
-    };
-  
+          const labels = questionariosData.map((questionario: any) => questionario.title);
+          setPieLabels(labels);
+
+          // Fetching resposta counts for each questionnaire
+          const respostaPromises = questionariosData.map((questionario: any) => 
+            axios.get(`${api}/respostas/questionario/${questionario.id}`)
+          );
+
+          Promise.all(respostaPromises).then(respostaCounts => {
+            const counts = respostaCounts.map(response => response.data.length);
+            setPieSeries(counts);
+          }).catch(error => {
+            console.error('Erro ao buscar contagem de respostas:', error);
+          });
+
+        })
+        .catch(error => {
+          console.error('Erro ao buscar dados do backend:', error);
+        });
+    }
   }, [user?.id]);
 
   // Dados de exemplo para o gráfico de linha
@@ -60,8 +69,6 @@ const Analytics: React.FC<AnalyticsProps> = ({
       categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
     },
   };
-
-  const pieSeries = [44];
 
   const pieOptions = {
     chart: {
