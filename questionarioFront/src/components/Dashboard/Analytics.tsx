@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import axios from 'axios';
+import { useUser } from '@clerk/clerk-react';
+
+const api = process.env.API_LINK;
 
 interface AnalyticsProps {
   searchQuery: string;
@@ -16,6 +20,31 @@ const Analytics: React.FC<AnalyticsProps> = ({
   handleFilterChange,
   userQuestionnaireCount,
 }) => {
+  const { user } = useUser();
+  const [questionarios, setQuestionarios] = useState([]);
+  console.log(questionarios)
+  const [pieLabels, setPieLabels] = useState<string[]>([]);
+
+  useEffect(() => {
+      if (user?.id) {
+        axios.get(`${api}/questionarios/user/${user.id}`)
+        .then(response => {
+            setQuestionarios(response.data);
+            // Extrair títulos dos questionários e o número de respostas
+            const labels = response.data.map((questionario: any) => questionario.title);
+            
+
+            setPieLabels(labels);
+            
+          })
+          .catch (error => {
+            console.error('Erro ao buscar dados do backend:', error);
+          }) 
+            
+    };
+  
+  }, [user?.id]);
+
   // Dados de exemplo para o gráfico de linha
   const lineSeries = [{
     name: 'Series 1',
@@ -32,14 +61,13 @@ const Analytics: React.FC<AnalyticsProps> = ({
     },
   };
 
-  // Dados de exemplo para o gráfico de pizza
-  const pieSeries = [44, 55, 13, 43, 22];
+  const pieSeries = [44];
 
   const pieOptions = {
     chart: {
       type: 'donut' as const,
     },
-    labels: ['Questionario A', 'Questionario B', 'Questionario C', 'Questionario D', 'Questionario E'],
+    labels: pieLabels,
   };
 
   return (
@@ -65,14 +93,14 @@ const Analytics: React.FC<AnalyticsProps> = ({
         </select>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className=" rounded-lg p-4">
+        <div className="rounded-lg p-4">
           <h3 className="text-lg font-bold mb-2">Respostas ao Decorrer do Tempo</h3>
           <div className="w-full h-64">
             <ReactApexChart options={lineOptions} series={lineSeries} type="line" />
           </div>
         </div>
-        <div className=" rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Respotas por Questionario</h3>
+        <div className="rounded-lg p-4">
+          <h3 className="text-lg font-bold mb-2">Respostas por Questionário</h3>
           <div className="w-full h-64">
             <ReactApexChart options={pieOptions} series={pieSeries} type="donut" />
           </div>
