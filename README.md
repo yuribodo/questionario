@@ -25,7 +25,7 @@ This application is focused for you create yours quiz and know what people will 
 - **TypeScript**: A superset of JavaScript, offering static type-checking and the latest ECMAScript features.
 - **TailwindCSS**: A utility-first CSS framework packed with classes like `flex`, `pt-4`, `text-center` and more to style your websites without leaving your HTML.
 - **React-Router-Dom**: A routing library for React, enabling navigation among views.
-- **Clerk**: Oauth librarie
+- **Clerk**: User Management Platform
 
 ### Backend
 
