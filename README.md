@@ -32,7 +32,6 @@ This application is focused for you create yours quiz and know what people will 
 - **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
 - **Express**: A minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
 - **TypeScript**: Brings static typing to JavaScript, ensuring a more predictable runtime behavior.
-- **Jest**: Used for writing unit and integration tests for the backend.
 - **PostgreSQL**: A powerful, open-source object-relational database system.
 - **Prisma**: is a modern ORM that simplifies database interactions by providing a type-safe query builder, intuitive data modeling, and automated migrations.
 
